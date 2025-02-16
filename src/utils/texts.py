@@ -55,4 +55,4 @@ class Buttons:
     GITHUB_URL = "https://github.com/bohd4nx/EmojiSaverBot"
 
     DEVELOPER = "👨‍💻 Developer"
-    DEVELOPER_URL = "https://t.me/bogdan_drienko"
+    DEVELOPER_URL = "https://t.me/bohd4nx"

@@ -4,14 +4,12 @@
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/downloads/)
 [![aiogram](https://img.shields.io/badge/aiogram-3.x-green)](https://docs.aiogram.dev/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/bohd4nx/EmojiSaverBot?style=social)](https://github.com/bohd4nx/EmojiSaverBot/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/bohd4nx/EmojiSaverBot?style=social)](https://github.com/bohd4nx/EmojiSaverBot/network/members)
 
 > Extract and download Telegram animated emoji and stickers in both TGS and JSON (lottie) formats for editing!
 
 <div align="center">
-    <h2>🤖 Try Demo Bot</h2>
     <h3><a href="https://t.me/EmojiSaverBot">@EmojiSaverBot</a></h3>
 </div>
 
@@ -59,7 +57,7 @@ How to get credentials:
   2. Login with your phone number
   3. Create new application
   4. Copy API ID and API Hash
-- **PHONE_NUMBER**: Your Telegram account phone number (needed for emoji extraction)
+- **PHONE_NUMBER**: Your Telegram account phone number
 
 ## 🚀 Usage
 
