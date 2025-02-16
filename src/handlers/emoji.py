@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 from typing import List, Optional, Set
@@ -7,6 +8,7 @@ from pyrogram import Client
 
 from data.config import config
 from src.utils import convert_tgs_to_json, get_file_name, send_result, create_archive, cleanup_files, Messages
+from src.utils.db import db
 
 logger = logging.getLogger(__name__)
 
@@ -19,10 +21,17 @@ async def handle_emoji_message(message: types.Message, pyro_client: Client) -> N
 
     status_message = await message.reply(Messages.LOADING)
     processed_files = []
+    animations_data = []
 
     try:
-        processed_files = await _process_emojis(custom_emojis, pyro_client)
+        processed_files = await _process_emojis(custom_emojis, pyro_client, message.from_user.id, animations_data)
         if processed_files:
+            if animations_data:
+                await db.save_animations(
+                    user_id=message.from_user.id,
+                    message_id=message.message_id,
+                    animations=animations_data
+                )
             zip_path = await create_archive(processed_files, message.from_user.id, "emoji", message.bot)
             await send_result(message, zip_path, processed_files)
         else:
@@ -44,7 +53,7 @@ def _extract_emoji_ids(message: types.Message) -> Set[str]:
     }
 
 
-async def _process_emojis(emoji_ids: Set[str], pyro_client: Client) -> List[str]:
+async def _process_emojis(emoji_ids: Set[str], pyro_client: Client, user_id: int, animations_data: list) -> List[str]:
     os.makedirs(config.DOWNLOAD_DIR, exist_ok=True)
     processed_files = []
     success_count = 0
@@ -52,9 +61,13 @@ async def _process_emojis(emoji_ids: Set[str], pyro_client: Client) -> List[str]
 
     for index, emoji_id in enumerate(emoji_ids):
         try:
-            files = await _process_single_emoji(emoji_id, pyro_client, index if total_count > 1 else None)
-            if files:
+            files, animation = await _process_single_emoji(emoji_id, pyro_client, index if total_count > 1 else None)
+            if files and animation:
                 processed_files.extend(files)
+                animations_data.append({
+                    'emoji_id': emoji_id,
+                    'animation': animation
+                })
                 success_count += 1
         except Exception as e:
             logger.error(f"Error processing emoji {emoji_id}: {e}")
@@ -65,12 +78,12 @@ async def _process_emojis(emoji_ids: Set[str], pyro_client: Client) -> List[str]
 
 async def _process_single_emoji(emoji_id: str,
                                 pyro_client: Client,
-                                index: Optional[int] = None) -> Optional[List[str]]:
+                                index: Optional[int] = None) -> tuple[Optional[List[str]], Optional[dict]]:
     try:
         sticker_set = await pyro_client.get_custom_emoji_stickers([int(emoji_id)])
         if not sticker_set:
             logger.warning(f"No sticker found for emoji {emoji_id}")
-            return None
+            return None, None
 
         emoji = sticker_set[0]
         base_path = os.path.join(config.DOWNLOAD_DIR, "emoji")
@@ -79,10 +92,12 @@ async def _process_single_emoji(emoji_id: str,
         await pyro_client.download_media(message=emoji.file_id, file_name=tgs_path)
 
         json_path = get_file_name(base_path, "json", emoji_id)
-        if await convert_tgs_to_json(tgs_path):
-            return [tgs_path, json_path]
-        return [tgs_path]
+        if json_path := await convert_tgs_to_json(tgs_path):
+            with open(json_path, 'r', encoding='utf-8') as f:
+                animation_data = json.load(f)
+            return [tgs_path, json_path], animation_data
+        return [tgs_path], None
 
     except Exception as e:
         logger.error(f"Failed to process emoji {emoji_id}: {e}")
-        return None
+        return None, None
