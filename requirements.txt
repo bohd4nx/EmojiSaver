@@ -1,0 +1,4 @@
+asyncio~=3.4.3
+lottie~=0.7.1
+aiogram~=3.17.0
+Pyrogram~=2.0.106
