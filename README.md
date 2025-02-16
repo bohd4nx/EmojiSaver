@@ -27,17 +27,20 @@
 ## 🛠 Installation
 
 1. Clone the repository
+
 ```bash
-git clone https://github.com/bohd4nx/EmojiSaverBot.git
+git clone https://github.com/bohd4nx/EmojiSaver.git
 cd EmojiSaverBot 
 ```
 
 2. Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
 3. Configure the bot ['config.py']
+
 ```python
 # Get this from @BotFather
 BOT_TOKEN = "your_bot_token"
@@ -51,31 +54,36 @@ PHONE_NUMBER = "+1234567890"
 ```
 
 How to get credentials:
+
 - **BOT_TOKEN**: Message [@BotFather](https://t.me/BotFather), create new bot, copy token
-- **API_ID** and **API_HASH**: 
-  1. Visit [my.telegram.org/apps](https://my.telegram.org/apps)
-  2. Login with your phone number
-  3. Create new application
-  4. Copy API ID and API Hash
+- **API_ID** and **API_HASH**:
+    1. Visit [my.telegram.org/apps](https://my.telegram.org/apps)
+    2. Login with your phone number
+    3. Create new application
+    4. Copy API ID and API Hash
 - **PHONE_NUMBER**: Your Telegram account phone number
 
 ## 🚀 Usage
 
 1. Start the bot
+
 ```bash
 python main.py
 ```
 
 2. In Telegram:
-   - Send any animated emoji to extract it
-   - Send any animated sticker to download it
-   - Use /help command for detailed information about bot usage
+    - Send any animated emoji to extract it
+    - Send any animated sticker to download it
+    - Use /help command for detailed information about bot usage
 
 ## 📝 License
+
 This project is MIT licensed. See [LICENSE](LICENSE) for details.
 
 ## 🌟 Support
+
 If you like this project:
+
 - Star it ⭐
 - Share with friends 👤
 - Consider contributing 🛠

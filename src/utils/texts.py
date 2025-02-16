@@ -24,15 +24,15 @@ class Messages:
         "• I'll convert it to editable format\n\n"
         "📦 <b>What you'll get:</b>\n"
         "You'll receive a ZIP archive containing:\n"
-        "• <code>.tgs</code> - Original Telegram sticker format\n"
-        "• <code>.json</code> - Ready for editing in After Effects or other Lottie-compatible software\n\n"
+        "<code>.tgs</code> - Original Telegram sticker format\n"
+        "<code>.json</code> - Ready for editing in After Effects or other Lottie-compatible software\n\n"
     )
 
     LOADING = "⏳ Processing your request..."
     NO_EMOJI = "❌ <b>Oops!</b>\n\nI couldn't find any custom emoji in your message."
     NO_ANIMATED_STICKER = "❌ <b>Oops!</b>\n\nPlease send me an <b>animated</b> sticker!"
-    SUCCESS = "✅ <b>Success!</b>\n\nI've prepared your files!"
-    SUCCESS_TGS_ONLY = "✅ <b>Partial success!</b>\n\nI've prepared the <code>.tgs</code> file. <code>.json</code> conversion failed :("
+    # SUCCESS = "✅ <b>Success!</b>\n\nI've prepared your files!"
+    SUCCESS_TGS_ONLY = "✅ <b>Partial success!</b>\n\nI've prepared the <code>.tgs</code> file but <code>.json</code> conversion failed :("
     ERROR = "❌ <b>Error occurred:</b>\n\n<code>{error}</code>\n\nPlease try again or contact support if the issue persists."
     INVALID_INPUT = (
         "❌ <b>Invalid input!</b>\n\n"
@@ -45,14 +45,14 @@ class Messages:
 
 @dataclass(frozen=True)
 class LogMessages:
-    CONVERSION_SUCCESS = "Successfully converted {path} to JSON format"
+    # CONVERSION_SUCCESS = "Successfully converted {path} to JSON format"
     CONVERSION_ERROR = "Failed to convert TGS to JSON: {error}"
 
 
 @dataclass(frozen=True)
 class Buttons:
     GITHUB = "🌟 GitHub"
-    GITHUB_URL = "https://github.com/bohd4nx/EmojiSaverBot"
+    GITHUB_URL = "https://github.com/bohd4nx/EmojiSaver"
 
     DEVELOPER = "👨‍💻 Developer"
     DEVELOPER_URL = "https://t.me/bohd4nx"

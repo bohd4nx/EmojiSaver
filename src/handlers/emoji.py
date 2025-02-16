@@ -60,9 +60,6 @@ async def _process_emojis(emoji_ids: Set[str], pyro_client: Client) -> List[str]
             logger.error(f"Error processing emoji {emoji_id}: {e}")
             continue
 
-    if success_count:
-        logger.info(f"Successfully processed {success_count}/{total_count} emoji")
-
     return processed_files
 
 
@@ -78,10 +75,10 @@ async def _process_single_emoji(emoji_id: str,
         emoji = sticker_set[0]
         base_path = os.path.join(config.DOWNLOAD_DIR, "emoji")
 
-        tgs_path = get_file_name(base_path, "tgs", index)
+        tgs_path = get_file_name(base_path, "tgs", emoji_id)
         await pyro_client.download_media(message=emoji.file_id, file_name=tgs_path)
 
-        json_path = get_file_name(base_path, "json", index)
+        json_path = get_file_name(base_path, "json", emoji_id)
         if await convert_tgs_to_json(tgs_path):
             return [tgs_path, json_path]
         return [tgs_path]

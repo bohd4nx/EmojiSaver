@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any
+from typing import Callable, Awaitable, List
 
 from aiogram import Bot, Dispatcher, F, types
 from aiogram.client.default import DefaultBotProperties
@@ -17,11 +17,21 @@ dispatcher_logger.setLevel(logging.INFO)
 pyrogram_logger = logging.getLogger('pyrogram')
 pyrogram_logger.setLevel(logging.ERROR)
 
+MessageHandler = Callable[[types.Message, Client], Awaitable[None]]
+
 
 class EmojiDownloaderBot:
+
     def __init__(self) -> None:
-        self.bot = Bot(token=config.BOT_TOKEN, default=DefaultBotProperties(parse_mode='HTML'))
+        self.bot = Bot(
+            token=config.BOT_TOKEN,
+            default=DefaultBotProperties(parse_mode='HTML')
+        )
         self.dp = Dispatcher()
+
+        self._setup_pyrogram()
+
+    def _setup_pyrogram(self) -> None:
 
         os.makedirs("data", exist_ok=True)
         self.pyro = Client(
@@ -32,38 +42,47 @@ class EmojiDownloaderBot:
             no_updates=True
         )
 
+    async def _register_commands(self) -> None:
+        commands: List[types.BotCommand] = [
+            types.BotCommand(command="start", description="🚀 Start the bot"),
+            types.BotCommand(command="help", description="❓ Show help information")
+        ]
+        await self.bot.set_my_commands(commands)
+
     def register_handlers(self) -> None:
         self.dp.message.register(cmd_start, Command("start"))
         self.dp.message.register(cmd_help, Command("help"))
+
         self.dp.message.register(
-            self._create_emoji_wrapper(),
+            self._wrap_handler(handle_emoji_message),
             F.entities.func(lambda entities: any(
                 entity.type == "custom_emoji" for entity in entities
             ))
         )
-        self.dp.message.register(self._create_sticker_wrapper(), F.sticker)
+        self.dp.message.register(
+            self._wrap_handler(handle_sticker_message),
+            F.sticker
+        )
+
         self.dp.message.register(self._handle_invalid_input)
+
+    def _wrap_handler(self, handler: MessageHandler) -> Callable[[types.Message], Awaitable[None]]:
+        async def wrapper(message: types.Message) -> None:
+            await handler(message, self.pyro)
+
+        return wrapper
 
     @staticmethod
     async def _handle_invalid_input(message: types.Message) -> None:
         await message.reply(Messages.INVALID_INPUT)
 
-    def _create_emoji_wrapper(self) -> Any:
-        async def emoji_wrapper(message):
-            await handle_emoji_message(message, self.pyro)
-
-        return emoji_wrapper
-
-    def _create_sticker_wrapper(self) -> Any:
-        async def sticker_wrapper(message):
-            await handle_sticker_message(message, self.pyro)
-
-        return sticker_wrapper
-
     async def start(self) -> None:
-        self.register_handlers()
-        await self.pyro.start()
         try:
+
+            await self._register_commands()
+            self.register_handlers()
+            await self.pyro.start()
+
             await self.dp.start_polling(self.bot)
         finally:
             await self.shutdown()

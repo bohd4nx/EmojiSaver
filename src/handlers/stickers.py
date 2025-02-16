@@ -38,10 +38,10 @@ async def _process_sticker(file_id: str, pyro_client: Client) -> Optional[List[s
     os.makedirs(config.DOWNLOAD_DIR, exist_ok=True)
     base_path = os.path.join(config.DOWNLOAD_DIR, "sticker")
 
-    tgs_path = get_file_name(base_path, "tgs")
+    tgs_path = get_file_name(base_path, "tgs", file_id)
     await pyro_client.download_media(message=file_id, file_name=tgs_path)
 
-    json_path = get_file_name(base_path, "json")
+    json_path = get_file_name(base_path, "json", file_id)
     if await convert_tgs_to_json(tgs_path):
         return [tgs_path, json_path]
     return [tgs_path]
