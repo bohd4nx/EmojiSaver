@@ -1,96 +1,119 @@
 <div align="center">
 
-# 🎯 Telegram Emoji & Sticker Downloader
+# Telegram Emoji & Sticker Downloader
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/downloads/)
-[![aiogram](https://img.shields.io/badge/aiogram-3.x-green)](https://docs.aiogram.dev/)
-[![GitHub Stars](https://img.shields.io/github/stars/bohd4nx/EmojiSaverBot?style=social)](https://github.com/bohd4nx/EmojiSaverBot/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/bohd4nx/EmojiSaverBot?style=social)](https://github.com/bohd4nx/EmojiSaverBot/network/members)
+[![aiogram](https://img.shields.io/badge/aiogram-3.17.0-green)](https://docs.aiogram.dev/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> Extract and download Telegram animated emoji and stickers in both TGS and JSON (lottie) formats for editing!
+This Telegram bot allows users to extract and download animated emoji and stickers in both TGS (Telegram format) and
+JSON (Lottie) formats, making them available for editing in animation software.
 
-<div align="center">
-    <h3><a href="https://t.me/EmojiSaverBot">@EmojiSaverBot</a></h3>
-    <h3><a href="https://api.bohd4n.me">Website</a></h3>
 </div>
+
+<p align="center">
+  <a href="https://t.me/EmojiSaverBot">🤖 @EmojiSaverBot</a> |
+  <a href="https://api.bohd4n.me">🌐 Web Interface</a>
+</p>
 
 </div>
 
 ## ✨ Features
 
-- 🎯 Extract animated emoji from messages
-- 🎨 Download animated stickers
-- 📦 Get both TGS and JSON formats
-- ⚡ Support for multiple emoji in one message
-- 🎭 Lottie-compatible output
-- 🚀 Fast and efficient processing
+- 🎯 **Extract Animated Emoji** - Download custom emoji from messages
+- 🎭 **Convert Stickers** - Transform animated stickers to editable formats
+- 🔄 **Multiple Emoji Support** - Process several emoji in a single message
+- 📦 **Dual Format Export** - Get both TGS and JSON formats in one archive
+- 👁️ **Live Preview** - View animations directly in Telegram
 
 ## 🛠 Installation
 
-1. Clone the repository
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/bohd4nx/EmojiSaver.git
+   cd EmojiSaverBot
+   ```
 
-```bash
-git clone https://github.com/bohd4nx/EmojiSaver.git
-cd EmojiSaverBot 
-```
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-2. Install dependencies
+3. **Configure environment**
+    - Create or modify `data/config.py`:
 
-```bash
-pip install -r requirements.txt
-```
-
-3. Configure the bot ['config.py']
-
-```python
-# Get this from @BotFather
-BOT_TOKEN = "your_bot_token"
-
-# Get these from https://my.telegram.org/apps
-API_ID = "your_api_id"
-API_HASH = "your_api_hash"
-
-# Your phone number in international format
-PHONE_NUMBER = "+1234567890"
-```
-
-How to get credentials:
-
-- **BOT_TOKEN**: Message [@BotFather](https://t.me/BotFather), create new bot, copy token
-- **API_ID** and **API_HASH**:
-    1. Visit [my.telegram.org/apps](https://my.telegram.org/apps)
-    2. Login with your phone number
-    3. Create new application
-    4. Copy API ID and API Hash
-- **PHONE_NUMBER**: Your Telegram account phone number
+   ```python
+   from dataclasses import dataclass
+   
+   @dataclass(frozen=True)
+   class Config:
+       # API credentials from https://my.telegram.org/apps
+       API_ID: str = "your_api_id"
+       API_HASH: str = "your_api_hash"
+       
+       # Bot token from @BotFather
+       BOT_TOKEN: str = "your_bot_token"
+       
+       # Phone number in international format
+       PHONE_NUMBER: str = "+1234567890"
+       
+       # Directory for temporary files
+       DOWNLOAD_DIR: str = "../temp"
+       
+       # MongoDB connection string (optional)
+       MONGO_URL: str = "mongodb://username:password@host:port"
+   
+   config = Config()
+   ```
 
 ## 🚀 Usage
 
-1. Start the bot
+### Running the Bot
 
 ```bash
 python main.py
 ```
 
-2. In Telegram:
-    - Send any animated emoji to extract it
-    - Send any animated sticker to download it
-    - Use /help command for detailed information about bot usage
+### User Guide
 
-## 📝 License
+| Command  | Description                |
+|----------|----------------------------|
+| `/start` | Initialize the bot         |
+| `/help`  | Display usage instructions |
 
-This project is MIT licensed. See [LICENSE](LICENSE) for details.
+#### 📱 Using with Emoji
 
-## 🌟 Support
+1. Send any message containing custom animated emoji
+2. The bot will automatically extract and convert all emoji
+3. Download the ZIP archive containing both formats
 
-If you like this project:
+#### 🎭 Using with Stickers
 
-- Star it ⭐
-- Share with friends 👤
-- Consider contributing 🛠
+1. Forward any animated sticker to the bot
+2. The bot will convert it to editable format
+3. Download and enjoy!
+
+## 🧩 Development
+
+Want to contribute? Great! Here's how:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 <div align="center">
-    <h4>Built with ❤️ by <a href="https://t.me/bohd4nx" target="_blank">Bohdan</a></h4>
+  <h4>Made with ❤️ by <a href="https://t.me/bohd4nx">@bohd4nx</a></h4>
+  <p>
+    <a href="https://github.com/bohd4nx/EmojiSaver">
+      <img src="https://img.shields.io/github/stars/bohd4nx/EmojiSaverBot?style=social" alt="GitHub stars">
+    </a>
+  </p>
 </div>

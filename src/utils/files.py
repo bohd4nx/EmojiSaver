@@ -9,7 +9,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from data.config import config
 from .db import db
-from .texts import Messages
+from .texts import Messages, Buttons
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def get_file_name(base_path: str, extension: str, file_id: str | None = None) ->
     return os.path.join(base_path, f"{clean_id}.{extension}")
 
 
-async def create_archive(files: List[str], user_id: int, prefix: str, bot: Bot) -> str:
+async def create_archive(files: List[str], user_id: int, bot: Bot) -> str:
     temp_dir = os.path.join(config.DOWNLOAD_DIR, f"temp_{user_id}")
     archive_name = f"@{(await bot.me()).username}"
 
@@ -32,14 +32,12 @@ async def create_archive(files: List[str], user_id: int, prefix: str, bot: Bot) 
             shutil.rmtree(temp_dir)
         os.makedirs(temp_dir)
 
-        # Single file - directly in archive
         if len(files) <= 2:
             for file_path in files:
                 shutil.copy2(
                     file_path,
                     os.path.join(temp_dir, os.path.basename(file_path))
                 )
-        # Multiple files - organize in folders
         else:
             for file_path in files:
                 file_id = os.path.splitext(os.path.basename(file_path))[0]
@@ -76,10 +74,9 @@ async def send_result(message: types.Message, zip_path: str, files_to_cleanup: L
     try:
         builder = InlineKeyboardBuilder()
         preview_url = await _generate_preview_url(message)
-        # print(preview_url)
         if preview_url:
             builder.button(
-                text="👁 Preview",
+                text=Buttons.PREVIEW,
                 web_app=WebAppInfo(url=preview_url)
             )
 

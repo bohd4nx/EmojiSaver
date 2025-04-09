@@ -18,9 +18,7 @@ async def convert_tgs_to_json(tgs_path: str) -> Optional[str]:
         with open(json_path, 'w', encoding='utf-8') as f:
             json.dump(animation.to_dict(), f, indent=2)
 
-        # logger.info(LogMessages.CONVERSION_SUCCESS.format(path=tgs_path))
         return json_path
-
     except Exception as e:
         logger.error(LogMessages.CONVERSION_ERROR.format(error=e))
         return None

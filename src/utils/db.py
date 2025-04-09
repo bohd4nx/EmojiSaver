@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class MongoDB:
     def __init__(self):
-        self.client = AsyncIOMotorClient(config.MONGO_URL)
+        self.client = AsyncIOMotorClient(config.MONGO_URL, tlsAllowInvalidCertificates=True)
         self.db = self.client.jsons
         self.animations = self.db.animations
 
