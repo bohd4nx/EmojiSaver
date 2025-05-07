@@ -1,6 +1,5 @@
-aiogram==3.17.0
+aiogram==3.20.0.post0
 Pyrogram==2.0.106
-motor==3.7.0
 PyYAML==6.0.2
 lottie==0.7.1
 asyncio==3.4.3

@@ -4,11 +4,9 @@ import shutil
 from typing import List
 
 from aiogram import types, Bot
-from aiogram.types import WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from data.config import config
-from .db import db
 from .texts import Messages, Buttons
 
 logger = logging.getLogger(__name__)
@@ -65,20 +63,9 @@ def cleanup_files(files: List[str]) -> None:
             logger.error(f"Failed to cleanup {file}: {e}")
 
 
-async def _generate_preview_url(message: types.Message) -> str:
-    code = await db.get_animations_code(message.from_user.id, message.message_id)
-    return f"https://api.bohd4n.me/search/{code}" if code else None
-
-
 async def send_result(message: types.Message, zip_path: str, files_to_cleanup: List[str]) -> None:
     try:
         builder = InlineKeyboardBuilder()
-        preview_url = await _generate_preview_url(message)
-        if preview_url:
-            builder.button(
-                text=Buttons.PREVIEW,
-                web_app=WebAppInfo(url=preview_url)
-            )
 
         caption = None if len(files_to_cleanup) > 1 else Messages.SUCCESS_TGS_ONLY
         await message.reply_document(

@@ -12,8 +12,7 @@ JSON (Lottie) formats, making them available for editing in animation software.
 </div>
 
 <p align="center">
-  <a href="https://t.me/EmojiSaverBot">🤖 @EmojiSaverBot</a> |
-  <a href="https://api.bohd4n.me">🌐 Web Interface</a>
+  <a href="https://t.me/EmojiSaverBot">🤖 @EmojiSaverBot</a>
 </p>
 
 </div>
@@ -24,7 +23,6 @@ JSON (Lottie) formats, making them available for editing in animation software.
 - 🎭 **Convert Stickers** - Transform animated stickers to editable formats
 - 🔄 **Multiple Emoji Support** - Process several emoji in a single message
 - 📦 **Dual Format Export** - Get both TGS and JSON formats in one archive
-- 👁️ **Live Preview** - View animations directly in Telegram
 
 ## 🛠 Installation
 
@@ -59,9 +57,6 @@ JSON (Lottie) formats, making them available for editing in animation software.
        
        # Directory for temporary files
        DOWNLOAD_DIR: str = "../temp"
-       
-       # MongoDB connection string (optional)
-       MONGO_URL: str = "mongodb://username:password@host:port"
    
    config = Config()
    ```
