@@ -1,5 +1,3 @@
-<div align="center">
-
 # Telegram Emoji & Sticker Downloader
 
 <div align="center">
@@ -92,5 +90,7 @@ python main.py
 ---
 
 <div align="center">
-  <h4>Made with ❤️ by <a href="https://t.me/bohd4nx">@bohd4nx</a></h4>
+
+#### Made with ❤️ by [@bohd4nx](https://t.me/bohd4nx)
+
 </div>
