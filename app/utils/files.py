@@ -3,7 +3,7 @@ import logging
 import zipfile
 from typing import Dict
 
-from aiogram import types, Bot
+from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from .texts import MESSAGES
@@ -11,10 +11,9 @@ from .texts import MESSAGES
 logger = logging.getLogger(__name__)
 
 
-async def create_archive(files_data: Dict[str, bytes], bot: Bot) -> bytes:
+async def create_archive(files_data: Dict[str, bytes]) -> bytes:
     try:
         archive_buffer = io.BytesIO()
-        bot_username = (await bot.me()).username
 
         with zipfile.ZipFile(archive_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
             for filename, file_data in files_data.items():

@@ -4,8 +4,8 @@ from typing import Callable
 from aiogram import Bot, Dispatcher, F, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.filters import Command
-from src.handlers import cmd_start, cmd_help, handle_emoji_message, handle_sticker_message
-from src.utils import MESSAGES
+from app.handlers import cmd_start, cmd_help, handle_emoji_message, handle_sticker_message
+from app.utils import MESSAGES
 
 from .config import config
 
@@ -51,7 +51,7 @@ class TelegramBot:
     @staticmethod
     def _with_userbot(handler: Callable) -> Callable:
         async def wrapper(message: types.Message) -> None:
-            from .app import app
+            from .EmojiDownloaderApp import app
             await handler(message, app.userbot.client)
 
         return wrapper

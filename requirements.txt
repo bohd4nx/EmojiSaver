@@ -1,5 +1,6 @@
-aiogram==3.20.0.post0
+aiogram==3.22.0
 Pyrogram==2.0.106
+tgcrypto-pyrofork==1.2.7
 PyYAML==6.0.2
-lottie==0.7.1
-asyncio==3.4.3
+lottie==0.7.2
+asyncio==4.0.0

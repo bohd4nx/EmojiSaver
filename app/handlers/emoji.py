@@ -1,13 +1,15 @@
-import io
 import logging
 from typing import Dict, Set
 
 from aiogram import types
+from app.utils import convert_tgs_to_json, send_result, create_archive, MESSAGES
 from pyrogram import Client
-from src.utils import convert_tgs_to_json, send_result, create_archive, MESSAGES
+from pyrogram.errors import FileReferenceExpired, RPCError
 
 logger = logging.getLogger(__name__)
 
+
+# TODO: handle Telegram says: [400 FILE_REFERENCE_EXPIRED] and refactore code
 
 async def handle_emoji_message(message: types.Message, pyro_client: Client) -> None:
     custom_emojis = _extract_emoji_ids(message)
@@ -20,7 +22,6 @@ async def handle_emoji_message(message: types.Message, pyro_client: Client) -> N
 
     try:
         files_data = await _process_emojis(custom_emojis, pyro_client)
-
         await _handle_processing_result(message, status_message, files_data)
     except Exception as e:
         await status_message.edit_text(MESSAGES["error"].format(error=str(e)))
@@ -40,8 +41,8 @@ async def _handle_processing_result(message: types.Message, status_message: type
         await status_message.edit_text(MESSAGES["processing_failed"])
         return
 
-    has_json = any(filename.endswith('.json') for filename in files_data.keys())
-    archive_data = await create_archive(files_data, message.bot)
+    has_json = any(filename.endswith('.json') for filename in files_data)
+    archive_data = await create_archive(files_data)
     await send_result(message, archive_data, has_json)
     await status_message.delete()
 
@@ -69,9 +70,20 @@ async def _process_single_emoji(emoji_id: str, pyro_client: Client) -> Dict[str,
 
         emoji = sticker_set[0]
 
-        tgs_buffer = io.BytesIO()
-        await pyro_client.download_media(message=emoji.file_id, file=tgs_buffer)
-        tgs_data = tgs_buffer.getvalue()
+        try:
+            tgs_buffer = await pyro_client.download_media(
+                message=emoji.file_id,
+                in_memory=True
+            )
+        except (FileReferenceExpired, RPCError) as e:
+            logger.error(f"Failed to download emoji {emoji_id}: {e}")
+            return {}
+
+        tgs_data = getattr(tgs_buffer, 'getvalue', lambda: tgs_buffer)()
+
+        if not tgs_data:
+            logger.error(f"Empty data received for emoji {emoji_id}")
+            return {}
 
         files_data = {f"{emoji_id}.tgs": tgs_data}
 
@@ -80,6 +92,7 @@ async def _process_single_emoji(emoji_id: str, pyro_client: Client) -> Dict[str,
             files_data[f"{emoji_id}.json"] = json_data
 
         return files_data
+
     except Exception as e:
         logger.error(f"Failed to process emoji {emoji_id}: {e}")
         return {}

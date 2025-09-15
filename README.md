@@ -2,95 +2,85 @@
 
 <div align="center">
 
-[![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/downloads/)
-[![aiogram](https://img.shields.io/badge/aiogram-3.17.0-blue)](https://docs.aiogram.dev/)
-[![GitHub](https://img.shields.io/github/stars/bohd4nx/EmojiSaverBot?style=social&label=Stars)](https://github.com/bohd4nx/EmojiSaverBot)
-[![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
-[![Demo](https://img.shields.io/badge/Demo-@EmojiSaverBot-blue)](https://t.me/EmojiSaverBot)
+[![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/downloads/)
+[![aiogram](https://img.shields.io/badge/aiogram-3.x-blue)](https://docs.aiogram.dev/)
+[![pyrogram](https://img.shields.io/badge/pyrogram-2.x-blue)](https://docs.pyrogram.org/)
 
 </div>
 
-This Telegram bot allows users to extract and download animated emoji and stickers in both TGS (Telegram format) and
-JSON (Lottie) formats, making them available for editing in animation software.
+Extract and download Telegram animated emoji and stickers in TGS and JSON formats for editing in animation software.
 
 ## ✨ Features
 
-- 🎯 **Extract Animated Emoji** - Download custom emoji from messages
-- 🎭 **Convert Stickers** - Transform animated stickers to editable formats
-- 🔄 **Multiple Emoji Support** - Process several emoji in a single message
-- 📦 **Dual Format Export** - Get both TGS and JSON formats in one archive
+- 🎯 **Extract Custom Emoji** - Download animated emoji from messages
+- 🎭 **Convert Animated Stickers** - Transform TGS to editable formats
+- 🔄 **Batch Processing** - Handle multiple emoji at once
+- 📦 **Dual Format Export** - Get both TGS and JSON files
 
-## 🛠 Installation
+## 🚀 Quick Start
 
-1. **Clone the repository**
-
+1. **Clone and install**
    ```bash
    git clone https://github.com/bohd4nx/EmojiSaver.git
-   cd EmojiSaverBot
-   ```
-
-2. **Install dependencies**
-
-   ```bash
+   cd EmojiSaver
    pip install -r requirements.txt
    ```
 
-3. **Configure environment**
+2. **Configure** - Fill `config.ini`:
+   ```ini
+   [Telegram]
+   API_ID = 12345678
+   API_HASH = your_api_hash
+   PHONE_NUMBER = +1234567890
 
-   - Create or modify `data/config.py`:
-
-   ```python
-   from dataclasses import dataclass
-
-   @dataclass(frozen=True)
-   class Config:
-       # API credentials from https://my.telegram.org/apps
-       API_ID: str = "your_api_id"
-       API_HASH: str = "your_api_hash"
-
-       # Bot token from @BotFather
-       BOT_TOKEN: str = "your_bot_token"
-
-       # Phone number in international format
-       PHONE_NUMBER: str = "+1234567890"
-
-       # Directory for temporary files
-       DOWNLOAD_DIR: str = "../temp"
-
-   config = Config()
+   [Bot]
+   BOT_TOKEN = 1234567890:your_bot_token
    ```
 
-## 🚀 Usage
+3. **Run**
+   ```bash
+   python main.py
+   ```
 
-### Running the Bot
+### How to Use
 
-```bash
-python main.py
-```
+| Action                        | Description                                                                      |
+|-------------------------------|----------------------------------------------------------------------------------|
+| **Send Custom Emoji**         | Send any message with animated custom emoji - they'll be automatically extracted |
+| **Forward Animated Stickers** | Forward any animated sticker (TGS) to convert it                                 |
+| **Batch Processing**          | Send multiple emoji in one message to download them all at once                  |
 
-### User Guide
+#### 📱 Custom Emoji Extraction
 
-| Command  | Description                |
-| -------- | -------------------------- |
-| `/start` | Initialize the bot         |
-| `/help`  | Display usage instructions |
+1. Find a message with custom animated emoji
+2. Send or forward it to the bot
+3. Bot automatically detects and processes all custom emoji
+4. Download the ZIP archive with TGS and JSON files
 
-#### 📱 Using with Emoji
-
-1. Send any message containing custom animated emoji
-2. The bot will automatically extract and convert all emoji
-3. Download the ZIP archive containing both formats
-
-#### 🎭 Using with Stickers
+#### 🎭 Animated Sticker Conversion
 
 1. Forward any animated sticker to the bot
-2. The bot will convert it to editable format
-3. Download and enjoy!
+2. Bot converts the TGS file to JSON (Lottie) format
+3. Receive both original TGS and converted JSON files
+
+### Output Formats
+
+- **TGS**: Original Telegram format (can be used in Telegram)
+- **JSON**: Lottie format (compatible with After Effects, Figma, web animations)
+
+## ⚙️ Technical Details
+
+- **Dual Client Architecture**: Uses both aiogram (bot) and pyrogram (userbot) for comprehensive Telegram API access
+- **In-Memory Processing**: Efficient file handling without disk writes during processing
+- **Error Resilience**: Handles expired file references and API rate limits
+- **Async/Await**: Fully asynchronous for optimal performance
 
 ---
 
 <div align="center">
 
 #### Made with ❤️ by [@bohd4nx](https://t.me/bohd4nx)
+
+**Star ⭐ this repo if you found it useful!**
 
 </div>

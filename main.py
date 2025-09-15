@@ -1,18 +1,24 @@
 import asyncio
 import logging
 
-from src.core.bot import EmojiDownloaderBot
+from app.core.EmojiDownloaderApp import app
 
 logging.basicConfig(
-    level=logging.ERROR,
-    format='%(asctime)s - [%(name)s] - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    level=logging.INFO,
+    format='[%(asctime)s] - %(levelname)s: %(message)s',
+    datefmt='%H:%M:%S'
 )
 
 
 async def main() -> None:
-    bot = EmojiDownloaderBot()
-    await bot.start()
+    try:
+        await app.start()
+    except KeyboardInterrupt:
+        logging.info("Received interrupt signal")
+    except Exception as e:
+        logging.error(f"Application error: {e}")
+    finally:
+        await app.shutdown()
 
 
 if __name__ == "__main__":

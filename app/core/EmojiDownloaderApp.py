@@ -1,7 +1,7 @@
 import logging
 
-from .bot import TelegramBot
-from .userbot import UserBot
+from .Bot import TelegramBot
+from .UserBot import UserBot
 
 logger = logging.getLogger(__name__)
 
@@ -19,21 +19,26 @@ class EmojiDownloaderApp:
             logger.info("Logged in as @%s [%s]", self.userbot.username, self.userbot.user_id)
 
             await self.bot.setup()
-            logger.info("Bot setup completed")
+            # logger.info("Bot setup completed")
 
             await self.bot.start_polling()
 
         except Exception as e:
             logger.error(f"Failed to start application: {e}")
-            await self.shutdown()
             raise
-        finally:
-            await self.shutdown()
 
     async def shutdown(self) -> None:
         logger.info("Shutting down...")
-        await self.userbot.stop()
-        await self.bot.close()
+        try:
+            await self.userbot.stop()
+        except Exception as e:
+            logger.error(f"Error stopping userbot: {e}")
+
+        try:
+            await self.bot.close()
+        except Exception as e:
+            logger.error(f"Error closing bot: {e}")
+
         logger.info("Shutdown completed")
 
 

@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from src.utils import MESSAGES
+from app.utils import MESSAGES
 
 
 def _get_keyboard() -> InlineKeyboardBuilder:
