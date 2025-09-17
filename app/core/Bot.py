@@ -1,5 +1,4 @@
 import logging
-
 from aiogram import Bot, Dispatcher, F, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.filters import Command
@@ -40,16 +39,11 @@ class TelegramBot:
         self.dp.message.register(cmd_start, Command("start"))
         self.dp.message.register(cmd_help, Command("help"))
 
-        # Фильтр для сообщений с кастомными эмоджи
         emoji_filter = F.entities.func(lambda entities: any(
             entity.type == "custom_emoji" for entity in entities
         ))
         self.dp.message.register(handle_emoji_message, emoji_filter)
-
-        # Фильтр для всех типов стикеров (анимированные, видео, статичные)
         self.dp.message.register(handle_sticker_message, F.sticker)
-
-        # Обработчик для всех остальных сообщений
         self.dp.message.register(self._handle_invalid_input)
 
     async def _handle_invalid_input(self, message: types.Message) -> None:
