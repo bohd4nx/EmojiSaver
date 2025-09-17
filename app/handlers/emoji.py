@@ -3,15 +3,11 @@ from typing import Dict, Set
 
 from aiogram import types
 from app.utils import convert_tgs_to_json, send_result, create_archive, MESSAGES
-from pyrogram import Client
-from pyrogram.errors import FileReferenceExpired, RPCError
 
 logger = logging.getLogger(__name__)
 
 
-# TODO: handle Telegram says: [400 FILE_REFERENCE_EXPIRED] and refactore code
-
-async def handle_emoji_message(message: types.Message, pyro_client: Client) -> None:
+async def handle_emoji_message(message: types.Message) -> None:
     custom_emojis = _extract_emoji_ids(message)
 
     if not custom_emojis:
@@ -21,7 +17,7 @@ async def handle_emoji_message(message: types.Message, pyro_client: Client) -> N
     status_message = await message.reply(MESSAGES["loading"])
 
     try:
-        files_data = await _process_emojis(custom_emojis, pyro_client)
+        files_data = await _process_emojis(custom_emojis, message.bot)
         await _handle_processing_result(message, status_message, files_data)
     except Exception as e:
         await status_message.edit_text(MESSAGES["error"].format(error=str(e)))
@@ -47,12 +43,12 @@ async def _handle_processing_result(message: types.Message, status_message: type
     await status_message.delete()
 
 
-async def _process_emojis(emoji_ids: Set[str], pyro_client: Client) -> Dict[str, bytes]:
+async def _process_emojis(emoji_ids: Set[str], bot) -> Dict[str, bytes]:
     files_data = {}
 
     for emoji_id in emoji_ids:
         try:
-            emoji_files = await _process_single_emoji(emoji_id, pyro_client)
+            emoji_files = await _process_single_emoji(emoji_id, bot)
             files_data.update(emoji_files)
         except Exception as e:
             logger.error(f"Error processing emoji {emoji_id}: {e}")
@@ -60,31 +56,24 @@ async def _process_emojis(emoji_ids: Set[str], pyro_client: Client) -> Dict[str,
     return files_data
 
 
-async def _process_single_emoji(emoji_id: str, pyro_client: Client) -> Dict[str, bytes]:
+async def _process_single_emoji(emoji_id: str, bot) -> Dict[str, bytes]:
     try:
-        sticker_set = await pyro_client.get_custom_emoji_stickers([int(emoji_id)])
+        stickers = await bot.get_custom_emoji_stickers([emoji_id])
 
-        if not sticker_set:
+        if not stickers:
             logger.warning(f"No sticker found for emoji {emoji_id}")
             return {}
 
-        emoji = sticker_set[0]
+        emoji = stickers[0]
 
-        try:
-            tgs_buffer = await pyro_client.download_media(
-                message=emoji.file_id,
-                in_memory=True
-            )
-        except (FileReferenceExpired, RPCError) as e:
-            logger.error(f"Failed to download emoji {emoji_id}: {e}")
-            return {}
+        file_info = await bot.get_file(emoji.file_id)
+        tgs_file = await bot.download_file(file_info.file_path)
 
-        tgs_data = getattr(tgs_buffer, 'getvalue', lambda: tgs_buffer)()
-
-        if not tgs_data:
+        if not tgs_file:
             logger.error(f"Empty data received for emoji {emoji_id}")
             return {}
 
+        tgs_data = tgs_file.read()
         files_data = {f"{emoji_id}.tgs": tgs_data}
 
         json_data = await convert_tgs_to_json(tgs_data)

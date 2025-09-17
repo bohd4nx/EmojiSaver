@@ -4,7 +4,6 @@
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/downloads/)
 [![aiogram](https://img.shields.io/badge/aiogram-3.x-blue)](https://docs.aiogram.dev/)
-[![pyrogram](https://img.shields.io/badge/pyrogram-2.x-blue)](https://docs.pyrogram.org/)
 
 </div>
 
@@ -28,11 +27,6 @@ Extract and download Telegram animated emoji and stickers in TGS and JSON format
 
 2. **Configure** - Fill `config.ini`:
    ```ini
-   [Telegram]
-   API_ID = 12345678
-   API_HASH = your_api_hash
-   PHONE_NUMBER = +1234567890
-
    [Bot]
    BOT_TOKEN = 1234567890:your_bot_token
    ```
@@ -70,9 +64,9 @@ Extract and download Telegram animated emoji and stickers in TGS and JSON format
 
 ## ⚙️ Technical Details
 
-- **Dual Client Architecture**: Uses both aiogram (bot) and pyrogram (userbot) for comprehensive Telegram API access
+- **Bot API Only**: Uses aiogram for Telegram Bot API access
 - **In-Memory Processing**: Efficient file handling without disk writes during processing
-- **Error Resilience**: Handles expired file references and API rate limits
+- **Error Resilience**: Handles API rate limits and processing errors
 - **Async/Await**: Fully asynchronous for optimal performance
 
 ---

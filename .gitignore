@@ -6,7 +6,7 @@ __pycache__/
 .Python
 
 # Virtual environments
-../.venv
+./.venv
 venv/
 
 # IDE
@@ -24,8 +24,3 @@ logs/
 # System files
 .DS_Store
 Thumbs.db
-
-# Data files
-dev.ini
-cache/
-unknown_errors.txt
