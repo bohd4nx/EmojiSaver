@@ -1,12 +1,5 @@
 # Telegram Emoji & Sticker Downloader
 
-<div align="center">
-
-[![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/downloads/)
-[![aiogram](https://img.shields.io/badge/aiogram-3.x-blue)](https://docs.aiogram.dev/)
-
-</div>
-
 Extract and download Telegram animated emoji and stickers in TGS and JSON formats for editing in animation software.
 
 ## ✨ Features
