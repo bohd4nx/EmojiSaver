@@ -1,10 +1,11 @@
-from .converter import convert_tgs_to_json
-from .files import create_archive, send_result
+from .converter import tgs_to_json, tgs_to_lottie
+from .files import pack_zip, send_result
 from .texts import MESSAGES
 
 __all__ = [
-    'convert_tgs_to_json',
-    'create_archive',
+    'tgs_to_json',
+    'tgs_to_lottie',
+    'pack_zip',
     'send_result',
     'MESSAGES',
 ]

@@ -6,20 +6,19 @@ __pycache__/
 .Python
 
 # Virtual environments
-./.venv
+.venv/
 venv/
 
 # IDE
 .idea/
 .vscode/
 
-# Session files
-*.session*.
-*.session-*
-
 # Logs
 logs/
 *.log
+
+# Environment variables
+.env
 
 # System files
 .DS_Store
