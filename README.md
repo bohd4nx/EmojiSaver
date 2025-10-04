@@ -35,7 +35,8 @@ pip install -r requirements.txt
 Create `.env` file in project root:
 
 ```env
-BOT_TOKEN=1234567890:your_bot_token_from_botfather
+# Get token from @BotFather
+BOT_TOKEN=your_bot_token_here
 ```
 
 ### 3. Run
