@@ -1,6 +1,17 @@
-# Telegram Emoji & Sticker Downloader
+<h1 align="center">🎭 Telegram Emoji & Sticker Downloader</h1>
 
-Extract and download Telegram animated emoji and stickers in TGS, JSON, and LOTTIE formats for editing in animation software.
+<p align="center">
+   <b>Extract and download Telegram animated emoji and stickers in multiple formats for editing in animation software.</b>
+</p>
+
+<div align="center">
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/downloads/)
+[![aiogram](https://img.shields.io/badge/aiogram-3x-green)](https://docs.aiogram.dev/)
+
+[Report Bug](https://github.com/bohd4nx/EmojiSaver/issues) · [Request Feature](https://github.com/bohd4nx/EmojiSaver/issues)
+
+</div>
 
 ## ✨ Features
 
@@ -11,62 +22,80 @@ Extract and download Telegram animated emoji and stickers in TGS, JSON, and LOTT
 
 ## 🚀 Quick Start
 
-1. **Clone and install**
-   ```bash
-   git clone https://github.com/bohd4nx/EmojiSaver.git
-   cd EmojiSaver
-   pip install -r requirements.txt
-   ```
+### 1. Installation
 
-2. **Configure** - Create `.env` file:
-   ```env
-   BOT_TOKEN=1234567890:your_bot_token_from_botfather
-   ```
+```bash
+git clone https://github.com/bohd4nx/EmojiSaver.git
+cd EmojiSaver
+pip install -r requirements.txt
+```
 
-3. **Run**
-   ```bash
-   python main.py
-   ```
+### 2. Configuration
 
-### How to Use
+Create `.env` file in project root:
+
+```env
+BOT_TOKEN=1234567890:your_bot_token_from_botfather
+```
+
+### 3. Run
+
+```bash
+python main.py
+```
+
+## 📱 Usage
+
+### Bot Interactions
 
 | Action                        | Description                                                                      |
-|-------------------------------|----------------------------------------------------------------------------------|
+| ----------------------------- | -------------------------------------------------------------------------------- |
 | **Send Custom Emoji**         | Send any message with animated custom emoji - they'll be automatically extracted |
 | **Forward Animated Stickers** | Forward any animated sticker (TGS) to convert it                                 |
 | **Batch Processing**          | Send multiple emoji in one message to download them all at once                  |
 
-#### 📱 Custom Emoji Extraction
+### Custom Emoji Extraction
 
 1. Find a message with custom animated emoji
 2. Send or forward it to the bot
 3. Bot automatically detects and processes all custom emoji
 4. Download the ZIP archive with TGS, JSON, and LOTTIE files
 
-#### 🎭 Animated Sticker Conversion
+### Animated Sticker Conversion
 
 1. Forward any animated sticker to the bot
 2. Bot converts the TGS file to multiple formats
 3. Receive original TGS, converted JSON, and LOTTIE files
 
-### Output Formats
+### Compatibility
 
-- **TGS**: Original Telegram format (can be used in Telegram)
-- **JSON**: Lottie format (compatible with After Effects, Figma, web animations)
-- **LOTTIE**: LottieFiles format (compressed)
+| Format | Software Compatibility                               | Usage                                |
+| ------ | ---------------------------------------------------- | ------------------------------------ |
+| TGS    | Telegram                                             | Upload as custom emoji/stickers      |
+| JSON   | Adobe After Effects, Figma, Lottie Web Player        | Edit animations, web implementation  |
+| LOTTIE | LottieFiles, Android/iOS apps, Web animation players | Cross-platform animation integration |
 
-## ⚙️ Technical Details
+## ⚙️ Technical Implementation
+
+### Processing Features
 
 - **In-Memory Processing**: Efficient file handling without disk writes during processing
 - **Error Resilience**: Handles API rate limits and processing errors
 - **Async/Await**: Fully asynchronous for optimal performance
-- **Multiple Formats**: Supports TGS, JSON, and LOTTIE export formats
+
+### File Handling
+
+1. **Download** - Retrieve TGS from Telegram servers
+2. **Conversion** - Transform to multiple formats (.tgs | .json | .lottie)
+3. **Compression** - Package files into ZIP archive
+4. **Delivery** - Send archive back to user
 
 ---
 
 <div align="center">
 
-#### Made with ❤️ by [@bohd4nx](https://t.me/bohd4nx)
+### Made with ❤️ by [@bohd4nx](https://t.me/bohd4nx)
 
 **Star ⭐ this repo if you found it useful!**
+
 </div>
