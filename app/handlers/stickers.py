@@ -8,7 +8,7 @@ async def handle_sticker(message: types.Message, i18n):
     logger.debug(f"Received sticker: animated={message.sticker.is_animated if message.sticker else False}")
 
     if not message.sticker or not message.sticker.is_animated:
-        logger.warning("Sticker is not animated or missing")
+        logger.warning(f"Sticker {message.sticker.file_id if message.sticker else 'None'} is not animated or missing")
         await message.reply(i18n.get("no-animated-sticker"))
         return
 
@@ -19,7 +19,7 @@ async def handle_sticker(message: types.Message, i18n):
         files, is_unsupported = await download_and_convert(message.sticker.file_id, message.bot)
 
         if not files:
-            logger.warning("No files generated from sticker")
+            logger.warning(f"No files generated from sticker {message.sticker.file_id}")
             await status_message.edit_text(i18n.get("processing-failed"))
             return
 
@@ -31,7 +31,7 @@ async def handle_sticker(message: types.Message, i18n):
         await send_result(message, archive, caption)
         await status_message.delete()
     except Exception as e:
-        logger.exception(f"Error handling sticker: {e}")
+        logger.exception(f"Error handling sticker {message.sticker.file_id if message.sticker else 'None'}: {e}")
         await status_message.edit_text(i18n.get("error", error=str(e)))
 
 

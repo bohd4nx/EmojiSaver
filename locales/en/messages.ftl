@@ -51,3 +51,5 @@ processing-failed = ❌ <b>Processing failed. Please try again.</b>
 no-emoji = ❌ <b>No suitable emoji found in your message.</b>
 
 no-animated-sticker = ❌ Please send an <b>animated</b> sticker.
+
+throttle-warning = 🔒 <b>Please wait {$seconds} seconds before sending next request.</b>

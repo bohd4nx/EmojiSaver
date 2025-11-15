@@ -14,6 +14,7 @@ from app.handlers import (
     register_sticker_handlers,
     register_fallback_handlers
 )
+from app.middlewares import ThrottlingMiddleware
 
 
 async def main():
@@ -29,6 +30,13 @@ async def main():
             default_locale="en"
         )
         i18n_middleware.setup(dispatcher=dp)
+
+        if config.THROTTLE_TIME:
+            throttling_middleware = ThrottlingMiddleware(throttle_time=config.THROTTLE_TIME)
+            dp.message.middleware(throttling_middleware)
+            logger.info(f"Throttling enabled: {config.THROTTLE_TIME}s")
+        else:
+            logger.info("Throttling disabled")
 
         register_start_handlers(dp)
         register_help_handlers(dp)

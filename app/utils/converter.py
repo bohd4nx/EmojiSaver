@@ -20,7 +20,7 @@ async def tgs_to_lottie(tgs_data: bytes) -> Optional[bytes]:
         json_data = gzip.decompress(tgs_data)
 
         manifest = {
-            "version": "2025.1.0",
+            "version": "2025.1.2",
             "generator": "EmojiSaver Bot by @bohd4nx",
             "author": "Telegram → @EmojiSaver",
             "description": "Converted from Telegram TGS format",

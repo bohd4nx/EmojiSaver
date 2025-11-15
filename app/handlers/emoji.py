@@ -22,7 +22,7 @@ async def handle_emoji(message: types.Message, i18n):
         files, has_unsupported = await process_all_emojis(emoji_ids, message.bot)
         await handle_result(message, status_message, files, has_unsupported, i18n)
     except Exception as e:
-        logger.exception(f"Error handling emoji: {e}")
+        logger.exception(f"Error handling emoji {emoji_ids}: {e}")
         await status_message.edit_text(i18n.get("error", error=str(e)))
 
 

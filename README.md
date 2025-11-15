@@ -41,8 +41,12 @@ pip install -r requirements.txt
 Create `.env` file in project root:
 
 ```env
-# Get token from @BotFather
-BOT_TOKEN=your_bot_token_here
+# Your bot token, get it from @BotFather
+BOT_TOKEN=1234567890:your_bot_token_from_@botfather
+
+# Request throttling (in seconds). Leave empty to disable
+THROTTLE_TIME=3.0
+
 ```
 
 ### 3. Run
@@ -97,13 +101,6 @@ python main.py
 4. **Conversion** - Create JSON and LOTTIE package formats
 5. **Packaging** - Compress all files into ZIP archive
 6. **Delivery** - Send back to user with format notice
-
-## Logging
-
-Bot creates `EmojiSaver.log` file with detailed processing information:
-
-- **Console**: INFO level (dispatcher events, errors)
-- **File**: DEBUG level (full processing details)
 
 ---
 

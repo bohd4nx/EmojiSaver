@@ -1,5 +1,5 @@
 __title__ = "Emoji Saver Bot"
-__version__ = "2025.1.1"
+__version__ = "2025.1.2"
 __author__ = "Bohdan (bohd4nx)"
 __description__ = "Telegram bot for extracting and downloading animated emoji and stickers in multiple editable formats (TGS, JSON, LOTTIE)."
 
