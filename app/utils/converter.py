@@ -1,11 +1,10 @@
 import gzip
 import io
 import json
-import logging
 import zipfile
 from typing import Optional
 
-logger = logging.getLogger(__name__)
+from app.core import logger
 
 
 async def tgs_to_json(tgs_data: bytes) -> Optional[bytes]:
@@ -21,9 +20,9 @@ async def tgs_to_lottie(tgs_data: bytes) -> Optional[bytes]:
         json_data = gzip.decompress(tgs_data)
 
         manifest = {
-            "version": "1.0",
+            "version": "2025.1.0",
             "generator": "EmojiSaver Bot by @bohd4nx",
-            "author": "Telegram → EmojiSaver",
+            "author": "Telegram → @EmojiSaver",
             "description": "Converted from Telegram TGS format",
             "generator_url": "https://github.com/bohd4nx/EmojiSaver",
             "created": "via Telegram Bot @EmojiSaverBot",

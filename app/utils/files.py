@@ -1,12 +1,11 @@
 import io
-import logging
 import zipfile
-from typing import Dict
+from typing import Dict, Optional
 
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-logger = logging.getLogger(__name__)
+from app.core import logger
 
 
 async def pack_zip(files: Dict[str, bytes]) -> bytes:
@@ -28,13 +27,14 @@ async def pack_zip(files: Dict[str, bytes]) -> bytes:
         raise
 
 
-async def send_result(message: types.Message, data: bytes) -> None:
+async def send_result(message: types.Message, data: bytes, caption: Optional[str] = None):
     try:
         builder = InlineKeyboardBuilder()
         filename = f"@{(await message.bot.me()).username}.zip"
 
         await message.reply_document(
             document=types.BufferedInputFile(data, filename=filename),
+            caption=caption,
             reply_markup=builder.as_markup()
         )
     except Exception as e:

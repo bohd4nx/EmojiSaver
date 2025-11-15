@@ -1,61 +1,39 @@
-import logging
-from typing import Dict, Optional
+from aiogram import Dispatcher, F, types
 
-from aiogram import types
-
-from app.utils import (
-    tgs_to_json,
-    tgs_to_lottie,
-    send_result,
-    pack_zip,
-    MESSAGES
-)
-
-logger = logging.getLogger(__name__)
+from app.core import logger
+from app.utils import download_and_convert, send_result, pack_zip
 
 
-async def handle_sticker(message: types.Message) -> None:
+async def handle_sticker(message: types.Message, i18n):
+    logger.debug(f"Received sticker: animated={message.sticker.is_animated if message.sticker else False}")
+
     if not message.sticker or not message.sticker.is_animated:
-        await message.reply(MESSAGES["no_animated_sticker"])
+        logger.warning("Sticker is not animated or missing")
+        await message.reply(i18n.get("no-animated-sticker"))
         return
 
-    status_message = await message.reply(MESSAGES["loading"])
+    logger.debug(f"Processing animated sticker: {message.sticker.file_id}")
+    status_message = await message.reply(i18n.get("loading"))
 
     try:
-        files = await process_sticker(message.sticker.file_id, message.bot)
+        files, is_unsupported = await download_and_convert(message.sticker.file_id, message.bot)
 
         if not files:
-            await status_message.edit_text(MESSAGES["processing_failed"])
+            logger.warning("No files generated from sticker")
+            await status_message.edit_text(i18n.get("processing-failed"))
             return
 
+        logger.debug(f"Packing {len(files)} files into archive")
         archive = await pack_zip(files)
-        await send_result(message, archive)
+        logger.debug(f"Archive created: {len(archive)} bytes")
+
+        caption = i18n.get("format-warning") if is_unsupported else None
+        await send_result(message, archive, caption)
         await status_message.delete()
     except Exception as e:
-        await status_message.edit_text(MESSAGES["error"].format(error=str(e)))
+        logger.exception(f"Error handling sticker: {e}")
+        await status_message.edit_text(i18n.get("error", error=str(e)))
 
 
-async def process_sticker(file_id: str, bot) -> Dict[str, bytes]:
-    try:
-        tgs_data = await download_sticker(file_id, bot)
-        if not tgs_data:
-            return {}
-
-        return {
-            f"{file_id}.tgs": tgs_data,
-            f"{file_id}.json": await tgs_to_json(tgs_data) or b"",
-            f"{file_id}.lottie": await tgs_to_lottie(tgs_data) or b""
-        }
-    except Exception as e:
-        logger.error(f"Failed to process sticker {file_id}: {e}")
-        return {}
-
-
-async def download_sticker(file_id: str, bot) -> Optional[bytes]:
-    try:
-        file_info = await bot.get_file(file_id)
-        file = await bot.download_file(file_info.file_path)
-        return file.read()
-    except Exception as e:
-        logger.error(f"Download error: {e}")
-        return None
+def register_sticker_handlers(dp: Dispatcher):
+    dp.message.register(handle_sticker, F.sticker)

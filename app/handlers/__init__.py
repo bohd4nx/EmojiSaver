@@ -1,10 +1,9 @@
-from .commands import cmd_start, cmd_help
-from .emoji import handle_emoji
-from .stickers import handle_sticker
+from .emoji import register_emoji_handlers
+from .fallback import register_fallback_handlers
+from .stickers import register_sticker_handlers
 
 __all__ = [
-    'cmd_start',
-    'cmd_help',
-    'handle_emoji',
-    'handle_sticker'
+    'register_emoji_handlers',
+    'register_sticker_handlers',
+    'register_fallback_handlers',
 ]

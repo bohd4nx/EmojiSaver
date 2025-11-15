@@ -14,8 +14,7 @@ venv/
 .vscode/
 
 # Logs
-logs/
-*.log
+EmojiSaver.log
 
 # Environment variables
 .env

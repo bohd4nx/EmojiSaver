@@ -1,20 +1,21 @@
-import logging
 import os
 import sys
 from pathlib import Path
+
 from dotenv import load_dotenv
 
-logger = logging.getLogger(__name__)
+from app.core.logger import logger
 
-def load_env():
-    env_path = Path(__file__).parent.parent.parent / '.env'
-    load_dotenv(env_path)
-    
-    token = os.getenv('BOT_TOKEN', '').strip()
-    if not token:
-        logger.error("Missing BOT_TOKEN in environment variables!")
-        sys.exit(1)
-    
-    return {"BOT_TOKEN": token}
 
-config = load_env()
+class Config:
+    def __init__(self):
+        env_path = Path(__file__).parent.parent.parent / '.env'
+        load_dotenv(env_path)
+
+        self.BOT_TOKEN = os.getenv('BOT_TOKEN', '').strip()
+        if not self.BOT_TOKEN:
+            logger.error("Missing BOT_TOKEN in environment variables!")
+            sys.exit(1)
+
+
+config = Config()
