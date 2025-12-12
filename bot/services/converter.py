@@ -34,7 +34,7 @@ def _tgs_to_svg_string(tgs_data: bytes) -> str:
     json_data = gzip.decompress(tgs_data)
     animation = parse_tgs(io.BytesIO(json_data))
     svg_buffer = io.StringIO()
-    export_svg(animation, svg_buffer, frame=0)
+    export_svg(animation, svg_buffer)  # list index out of range
     return svg_buffer.getvalue()
 
 
@@ -52,14 +52,14 @@ async def tgs_to_lottie(tgs_data: bytes) -> Optional[bytes]:
     try:
         json_data = gzip.decompress(tgs_data)
         logger.debug(f"Decompressed TGS data: {len(json_data)} bytes")
-        
+
         manifest = _create_lottie_manifest()
-        
+
         lottie_buffer = io.BytesIO()
         with zipfile.ZipFile(lottie_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:
             zf.writestr('manifest.json', json.dumps(manifest))
             zf.writestr('animations/animation.json', json_data)
-        
+
         result = lottie_buffer.getvalue()
         logger.debug(f"TGS to Lottie: {len(result)} bytes")
         return result

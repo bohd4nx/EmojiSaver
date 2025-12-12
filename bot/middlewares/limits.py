@@ -29,8 +29,9 @@ class RateLimitMiddleware(BaseMiddleware):
 
 
 class RateLimiter:
-    def __init__(self):
+    def __init__(self, max_size: int = 1000) -> None:
         self.last_action: Dict[int, float] = {}
+        self.max_size = max_size
 
     def check(self, user_id: int) -> Optional[int]:
         current_time = time.time()
@@ -40,15 +41,12 @@ class RateLimiter:
             return int(config.RATE_LIMIT_COOLDOWN - time_passed) + 1
 
         self.last_action[user_id] = current_time
-        self._cleanup(current_time)
-        return None
 
-    def _cleanup(self, current_time: float) -> None:
-        if len(self.last_action) > 100:
-            expired = [uid for uid, t in self.last_action.items() 
-                      if current_time - t > config.RATE_LIMIT_COOLDOWN * 2]
-            for uid in expired:
-                del self.last_action[uid]
+        if len(self.last_action) > self.max_size:
+            oldest = min(self.last_action.items(), key=lambda x: x[1])
+            del self.last_action[oldest[0]]
+
+        return None
 
 
 rate_limiter = RateLimiter()
