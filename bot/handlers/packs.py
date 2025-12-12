@@ -1,4 +1,3 @@
-from typing import Dict, Tuple, List
 from urllib.parse import urlparse
 
 from aiogram import Router, F
@@ -65,7 +64,7 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
 
 async def get_pack_items(
         message: Message, pack_type: str, pack_name: str
-) -> Tuple[List[Sticker], str] | None:
+) -> tuple[list[Sticker], str] | None:
     logger.debug(f"Fetching pack: type={pack_type}, name={pack_name}")
     sticker_set = await message.bot.get_sticker_set(pack_name)
     logger.debug(f"Found pack: {sticker_set.title}, items={len(sticker_set.stickers)}")
@@ -73,11 +72,11 @@ async def get_pack_items(
 
 
 async def process_items(
-        items: List[Sticker],
+        items: list[Sticker],
         bot,
         status_message: Message,
         i18n: I18nContext
-) -> Tuple[Dict, bool]:
+) -> tuple[dict, bool]:
     files = {}
     has_unsupported = False
     total = len(items)
