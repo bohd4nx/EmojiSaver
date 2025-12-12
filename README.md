@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="app/icon.svg" alt="Emoji Saver Bot Logo" width="120" height="120" style="border-radius: 24px;">
+  <img src="icon.svg" alt="Emoji Saver Bot Logo" width="120" height="120" style="border-radius: 24px;">
 
   <h1 style="margin-top: 24px;">Telegram Emoji Saver Bot</h1>
 
@@ -19,12 +19,12 @@
 
 ## Features
 
-- Extract Custom Emoji - Automatically extract all custom animated emoji from messages
-- Convert Stickers - Transform TGS animated stickers to editable formats
-- Triple Export - Get TGS, JSON, and LOTTIE formats in one archive
-- Batch Processing - Handle multiple emoji at once
-- Multi-language - Supports English and Russian
-- Simple Usage - Just send emoji or stickers, no complex commands
+- **Extract Custom Emoji** - Automatically extract all custom animated emoji from messages
+- **Convert Stickers** - Transform TGS animated stickers to editable formats
+- **Download Entire Packs** - Download full sticker or emoji packs from t.me links
+- **Multiple Export Formats** - Get TGS, JSON, Lottie, SVG, and PNG in one archive
+- **Batch Processing** - Handle multiple emoji at once with progress tracking
+- **Simple Usage** - Just send emoji, stickers, or pack URLs
 
 ## Quick Start
 
@@ -64,16 +64,24 @@ python main.py
 
 ### Custom Emoji Extraction
 
-1. **Send message** with animated custom emoji
+1. **Forward or send** message with an animated custom emoji
 2. **Wait** for processing
 3. **Download** ZIP archive with all formats
 4. **Edit** in your favorite animation software
 
 ### Animated Sticker Conversion
 
-1. **Forward** or send animated sticker to bot
-2. **Receive** ZIP with TGS, JSON, and LOTTIE files
-3. **Use** in After Effects, Figma, or LottieFiles
+1. **Forward or send** animated sticker to bot
+2. **Wait** for processing
+3. **Download** ZIP archive with all formats
+4. **Use** in After Effects, Figma, or LottieFiles
+
+### Pack Download
+
+1. **Send pack URL** (e.g., `https://t.me/addstickers/YourPack` or `https://t.me/addemoji/YourPack`)
+2. **Watch progress** as bot processes each item
+3. **Download** complete archive with all stickers/emoji converted
+4. **Edit** entire pack in your workflow
 
 ## Format Compatibility
 
@@ -83,6 +91,8 @@ python main.py
 | ---------- | --------- | --------------------------------------------- | ------------------------------------ |
 | **TGS**    | `.tgs`    | Telegram                                      | Upload as custom emoji/stickers      |
 | **JSON**   | `.json`   | Adobe After Effects, Figma, Lottie Web Player | Edit animations, web implementation  |
+| **SVG**    | `.svg`    | Illustrator, Inkscape, Figma                  | Vector editing, first frame preview  |
+| **PNG**    | `.png`    | Photoshop, GIMP, Any image viewer             | Raster preview, 512x512 pixels       |
 | **Lottie** | `.lottie` | LottieFiles, Android/iOS apps                 | Cross-platform animation integration |
 
 ### Input Requirements
@@ -91,16 +101,14 @@ python main.py
 - **Format**: TGS (Lottie-based) animations
 - **Note**: WebM/WebP video stickers are not supported for conversion
 
-## Technical Implementation
-
 ### Processing Algorithm
 
-1. **Detection** - Identify custom emoji or animated stickers
-2. **Download** - Retrieve TGS file from Telegram servers
+1. **Detection** - Identify custom emoji, animated stickers, or pack URLs
+2. **Download** - Retrieve TGS files from Telegram servers
 3. **Decompression** - Extract Lottie JSON from gzipped TGS
 4. **Conversion** - Create JSON and LOTTIE package formats
-5. **Packaging** - Compress all files into ZIP archive
-6. **Delivery** - Send back to user with format notice
+5. **Packaging** - Compress all files into organized ZIP archive
+6. **Delivery** - Send back to user with format notice and progress tracking
 
 ---
 

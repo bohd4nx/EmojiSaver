@@ -6,10 +6,11 @@ start-message =
     🔸 <b>What can I do?</b> [/help]
     • Extract emoji from messages
     • Convert <b>animated</b> stickers to editable format
+    • Download entire sticker/emoji packs
     
-    Just send me any message with emoji or forward an <b>animated</b> sticker!
+    Just send me emoji, forward a sticker, or paste a pack link!
     
-    ⭐️ <a href="https://github.com/bohd4nx/EmojiSaver">GitHub</a> • 👨‍💻 <a href="https://t.me/bohd4nx">Developer</a>
+    ⭐️ <a href="{$github}">GitHub</a> • 👨‍💻 <a href="{$developer}">Developer</a>
 
 help-message = 
     1️⃣ <b>For Emoji:</b>
@@ -20,10 +21,17 @@ help-message =
     • Send or forward any <b>animated</b> sticker
     • I'll convert it to editable format
     
+    3️⃣ <b>For Entire Packs:</b>
+    • Send pack link: <code>https://t.me/addstickers/PackName</code>
+    • Or emoji pack: <code>https://t.me/addemoji/PackName</code>
+    • I'll download and convert the entire pack
+    
     📦 <b>Output formats:</b>
     <code>.tgs</code> - Original Telegram format
     <code>.json</code> - Lottie format for editing
     <code>.lottie</code> - LottieFiles format (compressed)
+    <code>.svg</code> - Vector image (first frame)
+    <code>.png</code> - Raster image (512x512px)
 
 format-warning = 
     ⚠️ <b>Format Notice:</b>
@@ -32,7 +40,7 @@ format-warning =
     
     Only the original <code>.tgs</code> files were included for these items.
 
-error = 
+processing-error = 
     ❌ <b>Error:</b>
     
     <code>{$error}</code>
@@ -44,12 +52,14 @@ invalid-input =
     
     Use /help for instructions.
 
-loading = ⏳ <b>Processing your request...</b>
+processing = ⏳ <b>Processing your request...</b>
+
+processing-pack = ⏳ <b>Processing: {$current}/{$total}</b>
 
 processing-failed = ❌ <b>Processing failed. Please try again.</b>
 
-no-emoji = ❌ <b>No suitable emoji found in your message.</b>
+no-custom-emoji = ❌ <b>No suitable emoji found in your message.</b>
 
 no-animated-sticker = ❌ Please send an <b>animated</b> sticker.
 
-throttle-warning = 🔒 <b>Please wait {$seconds} seconds before sending next request.</b>
+rate-limit-alert = 🔒 Please wait {$seconds} seconds before sending next request!
