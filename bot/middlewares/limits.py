@@ -40,7 +40,15 @@ class RateLimiter:
             return int(config.RATE_LIMIT_COOLDOWN - time_passed) + 1
 
         self.last_action[user_id] = current_time
+        self._cleanup(current_time)
         return None
+
+    def _cleanup(self, current_time: float) -> None:
+        if len(self.last_action) > 100:
+            expired = [uid for uid, t in self.last_action.items() 
+                      if current_time - t > config.RATE_LIMIT_COOLDOWN * 2]
+            for uid in expired:
+                del self.last_action[uid]
 
 
 rate_limiter = RateLimiter()
