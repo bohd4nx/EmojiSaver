@@ -8,15 +8,15 @@ start-message =
     • Convert <b>animated</b> stickers to editable format
     • Download entire sticker/emoji packs
     
-    Just send me emoji, forward a sticker, or paste a pack link!
-    
     📊 <b>Total downloads:</b> {$downloads}
+    
+    Just send me emoji, forward a sticker, or paste a pack link!
     
     ⭐️ <a href="{$github}">GitHub</a> • 👨‍💻 <a href="{$developer}">Developer</a>
 
 help-message = 
     1️⃣ <b>For Emoji:</b>
-    • Send any message containing custom emoji
+    • Send or forward any message containing custom emoji
     • You'll receive all emoji extracted automatically
     
     2️⃣ <b>For Animated Stickers:</b>
@@ -62,6 +62,6 @@ processing-failed = ❌ <b>Processing failed. Please try again.</b>
 
 no-custom-emoji = ❌ <b>No suitable emoji found in your message.</b>
 
-no-animated-sticker = ❌ Please send an <b>animated</b> sticker.
+no-animated-sticker = ❌ Please send or forward an <b>animated</b> sticker.
 
 rate-limit-alert = 🔒 Please wait {$seconds} seconds before sending next request!
