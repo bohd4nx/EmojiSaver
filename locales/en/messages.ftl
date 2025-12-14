@@ -10,6 +10,8 @@ start-message =
     
     Just send me emoji, forward a sticker, or paste a pack link!
     
+    📊 <b>Total downloads:</b> {$downloads}
+    
     ⭐️ <a href="{$github}">GitHub</a> • 👨‍💻 <a href="{$developer}">Developer</a>
 
 help-message = 

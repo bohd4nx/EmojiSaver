@@ -20,7 +20,7 @@ async def pack_zip(files: Dict[str, bytes]) -> bytes:
                 else:
                     zip_file.writestr(name, data)
                 
-                logger.debug(f"Added to archive: {len(data)} bytes")
+                # logger.debug(f"Added to archive: {len(data)} bytes")
 
         buffer.seek(0)
         result = buffer.getvalue()

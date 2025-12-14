@@ -5,6 +5,8 @@ from aiogram.types import Message
 from aiogram_i18n import I18nContext
 
 from bot.core import logger
+from bot.database import SessionLocal
+from bot.database.crud import UserCRUD
 from bot.services import download_and_convert, pack_zip, send_result
 
 router = Router(name=__name__)
@@ -36,6 +38,9 @@ async def handle_emoji(message: Message, i18n: I18nContext) -> None:
 
         await send_result(message, archive_data, caption)
         await status_message.delete()
+
+        async with SessionLocal() as session:
+            await UserCRUD.increment_downloads(session, message.from_user.id)
     except Exception as e:
         logger.exception(f"Error handling emoji: {e}")
         await status_message.edit_text(i18n.get("processing-error", error=str(e)))

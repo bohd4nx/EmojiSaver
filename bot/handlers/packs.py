@@ -5,6 +5,8 @@ from aiogram.types import Message, Sticker
 from aiogram_i18n import I18nContext
 
 from bot.core import logger
+from bot.database import SessionLocal
+from bot.database.crud import UserCRUD
 from bot.services import download_and_convert, pack_zip, send_result
 
 router = Router(name=__name__)
@@ -57,6 +59,9 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
         await status_message.delete()
         logger.debug(f"Pack processed successfully: {pack_title}")
 
+        async with SessionLocal() as session:
+            await UserCRUD.increment_downloads(session, message.from_user.id)
+
     except Exception as e:
         logger.exception(f"Error handling pack: {e}")
         await status_message.edit_text(i18n.get("processing-error", error=str(e)))
@@ -84,9 +89,11 @@ async def process_items(
 
     for idx, item in enumerate(items, 1):
         logger.debug(f"Processing item {idx}/{total}: {item.file_id}")
-        await status_message.edit_text(
-            i18n.get("processing-pack", current=idx, total=total)
-        )
+
+        if idx % 10 == 0 or idx == total:
+            await status_message.edit_text(
+                i18n.get("processing-pack", current=idx, total=total)
+            )  # Flood control exceeded on method 'EditMessageText'
 
         try:
             item_files, is_unsupported = await download_and_convert(item.file_id, bot)

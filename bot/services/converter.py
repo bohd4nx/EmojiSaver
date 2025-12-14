@@ -51,7 +51,7 @@ async def tgs_to_json(tgs_data: bytes) -> Optional[bytes]:
 async def tgs_to_lottie(tgs_data: bytes) -> Optional[bytes]:
     try:
         json_data = gzip.decompress(tgs_data)
-        logger.debug(f"Decompressed TGS data: {len(json_data)} bytes")
+        # logger.debug(f"Decompressed TGS data: {len(json_data)} bytes")
         
         manifest = _create_lottie_manifest()
         
