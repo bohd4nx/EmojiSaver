@@ -1,5 +1,6 @@
 import time
-from typing import Callable, Dict, Any, Awaitable, Optional
+from collections.abc import Callable, Awaitable
+from typing import Any
 
 from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery
@@ -11,9 +12,9 @@ from bot.core import config
 class RateLimitMiddleware(BaseMiddleware):
     async def __call__(
             self,
-            handler: Callable[[CallbackQuery, Dict[str, Any]], Awaitable[Any]],
+            handler: Callable[[CallbackQuery, dict[str, Any]], Awaitable[Any]],
             event: CallbackQuery,
-            data: Dict[str, Any]
+            data: dict[str, Any]
     ) -> Any:
         wait_seconds = rate_limiter.check(event.from_user.id)
 
@@ -30,9 +31,9 @@ class RateLimitMiddleware(BaseMiddleware):
 
 class RateLimiter:
     def __init__(self):
-        self.last_action: Dict[int, float] = {}
+        self.last_action: dict[int, float] = {}
 
-    def check(self, user_id: int) -> Optional[int]:
+    def check(self, user_id: int) -> int | None:
         current_time = time.time()
         time_passed = current_time - self.last_action.get(user_id, 0)
 
@@ -45,8 +46,8 @@ class RateLimiter:
 
     def _cleanup(self, current_time: float) -> None:
         if len(self.last_action) > 100:
-            expired = [uid for uid, t in self.last_action.items() 
-                      if current_time - t > config.RATE_LIMIT_COOLDOWN * 2]
+            expired = [uid for uid, t in self.last_action.items()
+                       if current_time - t > config.RATE_LIMIT_COOLDOWN * 2]
             for uid in expired:
                 del self.last_action[uid]
 

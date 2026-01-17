@@ -1,10 +1,38 @@
+import os
+
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase
 
-DATABASE_URL = "sqlite+aiosqlite:///./bot.db"
+from bot.__meta__ import APP_NAME
 
-engine = create_async_engine(DATABASE_URL, echo=False)
-SessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite+aiosqlite:///./{APP_NAME}.db")
+
+if "sqlite" in DATABASE_URL:
+    engine = create_async_engine(
+        DATABASE_URL,
+        echo=False,
+        connect_args={
+            "check_same_thread": False,
+            "timeout": 60,
+        }
+    )
+else:
+    engine = create_async_engine(
+        DATABASE_URL,
+        echo=False,
+        pool_size=50,
+        max_overflow=100,
+        pool_pre_ping=True,
+        pool_recycle=3600,
+    )
+
+SessionLocal = async_sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+    autoflush=False
+)
 
 
 class Base(DeclarativeBase):
@@ -13,22 +41,13 @@ class Base(DeclarativeBase):
 
 async def init_db():
     async with engine.begin() as conn:
+        if "sqlite" in DATABASE_URL:
+            await conn.execute(text("PRAGMA journal_mode=WAL"))
+            await conn.execute(text("PRAGMA busy_timeout=60000"))
+            await conn.execute(text("PRAGMA synchronous=NORMAL"))
+            await conn.execute(text("PRAGMA foreign_keys=ON"))
         await conn.run_sync(Base.metadata.create_all)
 
 
 async def close_db():
     await engine.dispose()
-
-# async def add(instance):
-#     async with SessionLocal() as session:
-#         try:
-#             session.add(instance)
-#             await session.commit()
-#             await session.refresh(instance)
-#             return instance
-#         except IntegrityError:
-#             await session.rollback()
-#             return None
-#         except Exception:
-#             await session.rollback()
-#             raise

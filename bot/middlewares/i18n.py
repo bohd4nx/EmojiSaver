@@ -1,4 +1,5 @@
-from typing import Any, Awaitable, Callable, Dict, Optional
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
@@ -8,11 +9,11 @@ from aiogram_i18n import I18nContext
 class LocaleMiddleware(BaseMiddleware):
     async def __call__(
             self,
-            handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+            handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
             event: TelegramObject,
-            data: Dict[str, Any],
+            data: dict[str, Any],
     ) -> Any:
-        i18n: Optional[I18nContext] = data.get("i18n")
+        i18n: I18nContext | None = data.get("i18n")
         user = getattr(event, "from_user", None)
 
         if i18n and user:

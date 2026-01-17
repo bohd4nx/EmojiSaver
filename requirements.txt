@@ -3,9 +3,7 @@ fluent_compiler==1.1
 python-dotenv==1.2.1
 fluent-runtime==0.4.0
 SQLAlchemy==2.0.45
-aiosqlite==0.22.0
-aiogram==3.23.0
-rich==14.2.0
-greenlet==3.3.0
+aiosqlite==0.22.1
+aiogram==3.24.0
 lottie==0.7.2
 cairosvg==2.8.2

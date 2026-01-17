@@ -1,9 +1,7 @@
-from typing import Optional
-
-from sqlalchemy import select, func
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..models import User
+from bot.database.models import User
 
 
 class UserCRUD:
@@ -11,8 +9,8 @@ class UserCRUD:
     async def get_or_create(
             session: AsyncSession,
             user_id: int,
-            username: Optional[str] = None,
-            full_name: Optional[str] = None
+            username: str | None = None,
+            full_name: str | None = None
     ) -> User:
         user = await UserCRUD.get_by_id(session, user_id)
         if user:
@@ -26,7 +24,7 @@ class UserCRUD:
         return user
 
     @staticmethod
-    async def get_by_id(session: AsyncSession, user_id: int) -> Optional[User]:
+    async def get_by_id(session: AsyncSession, user_id: int) -> User | None:
         result = await session.execute(select(User).where(User.user_id == user_id))
         return result.scalar_one_or_none()
 
@@ -34,16 +32,3 @@ class UserCRUD:
     async def get_all(session: AsyncSession) -> list[User]:
         result = await session.execute(select(User))
         return list(result.scalars())
-    
-    @staticmethod
-    async def increment_downloads(session: AsyncSession, user_id: int) -> None:
-        user = await UserCRUD.get_by_id(session, user_id)
-        if user:
-            user.downloads += 1
-            await session.commit()
-
-    @staticmethod
-    async def get_total_downloads(session: AsyncSession) -> int:
-        result = await session.execute(select(func.sum(User.downloads)))
-        total = result.scalar()
-        return total if total else 0

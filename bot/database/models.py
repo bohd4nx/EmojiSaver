@@ -1,18 +1,34 @@
 from datetime import datetime
-from typing import Optional
 
-from sqlalchemy import String, DateTime, func, BigInteger
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, DateTime, func, BigInteger, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import Base
+from bot.database.base import Base
 
 
 class User(Base):
     __tablename__ = "users"
 
     user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
-    username: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    full_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    downloads: Mapped[int] = mapped_column(default=0, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+    username: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    full_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), index=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
+
+    downloads: Mapped[list["Download"]] = relationship(
+        "Download",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
+
+
+class Download(Base):
+    __tablename__ = "downloads"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False, index=True)
+    content_type: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    content_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), nullable=False, index=True)
+
+    user: Mapped["User"] = relationship("User", back_populates="downloads")

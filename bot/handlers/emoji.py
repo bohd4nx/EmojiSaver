@@ -1,12 +1,10 @@
-from typing import Dict, Set
-
 from aiogram import Router, F, Bot
 from aiogram.types import Message
 from aiogram_i18n import I18nContext
 
 from bot.core import logger
 from bot.database import SessionLocal
-from bot.database.crud import UserCRUD
+from bot.database.crud import DownloadsCRUD
 from bot.services import download_and_convert, pack_zip, send_result
 
 router = Router(name=__name__)
@@ -40,13 +38,13 @@ async def handle_emoji(message: Message, i18n: I18nContext) -> None:
         await status_message.delete()
 
         async with SessionLocal() as session:
-            await UserCRUD.increment_downloads(session, message.from_user.id)
+            await DownloadsCRUD.add_download(session, message.from_user.id, "emoji")
     except Exception as e:
         logger.exception(f"Error handling emoji: {e}")
         await status_message.edit_text(i18n.get("processing-error", error=str(e)))
 
 
-async def process_all_emojis(emoji_ids: Set[str], bot: Bot) -> tuple[Dict[str, bytes], bool]:
+async def process_all_emojis(emoji_ids: set[str], bot: Bot) -> tuple[dict[str, bytes], bool]:
     files = {}
     has_unsupported = False
 
@@ -62,7 +60,7 @@ async def process_all_emojis(emoji_ids: Set[str], bot: Bot) -> tuple[Dict[str, b
     return files, has_unsupported
 
 
-async def process_emoji(emoji_id: str, bot: Bot) -> tuple[Dict[str, bytes], bool]:
+async def process_emoji(emoji_id: str, bot: Bot) -> tuple[dict[str, bytes], bool]:
     try:
         stickers = await bot.get_custom_emoji_stickers([emoji_id])
 
