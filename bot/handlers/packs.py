@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
 from aiogram import Router, F
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import Message, Sticker
 from aiogram_i18n import I18nContext
 
@@ -31,10 +32,10 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
     status_message = await message.reply(i18n.get("processing-pack", current=0, total=0))
 
     try:
-        result = await get_pack_items(message, pack_type, pack_name)
+        result = await get_pack_items(message, pack_name)
         if not result:
             logger.warning(f"Pack not found: {pack_name}")
-            await status_message.edit_text(i18n.get("processing-failed"))
+            await status_message.edit_text(i18n.get("pack-not-found"))
             return
 
         items, pack_title = result
@@ -51,11 +52,8 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
             await status_message.edit_text(i18n.get("processing-failed"))
             return
 
-        logger.debug(f"Creating archive for pack: {pack_title}")
         archive = await pack_zip(files)
-        caption = i18n.get("format-warning") if has_unsupported else None
-
-        await send_result(message, archive, caption, pack_title)
+        await send_result(message, archive, i18n, has_unsupported, pack_title)
         await status_message.delete()
         logger.debug(f"Pack processed successfully: {pack_title}")
 
@@ -68,12 +66,19 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
 
 
 async def get_pack_items(
-        message: Message, pack_type: str, pack_name: str
+        message: Message, pack_name: str
 ) -> tuple[list[Sticker], str] | None:
-    logger.debug(f"Fetching pack: type={pack_type}, name={pack_name}")
-    sticker_set = await message.bot.get_sticker_set(pack_name)
-    logger.debug(f"Found pack: {sticker_set.title}, items={len(sticker_set.stickers)}")
-    return sticker_set.stickers, sticker_set.title
+    try:
+        # logger.debug(f"Fetching pack: type={pack_type}, name={pack_name}")
+        sticker_set = await message.bot.get_sticker_set(pack_name)
+        logger.debug(f"Found pack: {sticker_set.title}, items={len(sticker_set.stickers)}")
+        return sticker_set.stickers, sticker_set.title
+    except TelegramBadRequest as e:
+        if "STICKERSET_INVALID" in str(e):
+            logger.warning(f"Invalid sticker set: {pack_name}")
+        else:
+            logger.error(f"Telegram error fetching pack {pack_name}: {e}")
+        return None
 
 
 async def process_items(
@@ -85,15 +90,20 @@ async def process_items(
     files = {}
     has_unsupported = False
     total = len(items)
-    logger.debug(f"Starting to process {total} items")
+
+    update_interval = 50 if total > 500 else 20 if total > 100 else 10
+    logger.debug(f"Processing {total} items with update interval {update_interval}")
 
     for idx, item in enumerate(items, 1):
-        logger.debug(f"Processing item {idx}/{total}: {item.file_id}")
-
-        if idx % 10 == 0 or idx == total:
-            await status_message.edit_text(
-                i18n.get("processing-pack", current=idx, total=total)
-            )  # Flood control exceeded on method 'EditMessageText'
+        if idx % update_interval == 0 or idx == total:
+            try:
+                await status_message.edit_text(
+                    i18n.get("processing-pack", current=idx, total=total)
+                )
+            except TelegramBadRequest as e:
+                logger.warning(f"Failed to update status: {e}")
+            except Exception as e:
+                logger.error(f"Unexpected error updating status: {e}")
 
         try:
             item_files, is_unsupported = await download_and_convert(item.file_id, bot)

@@ -1,3 +1,5 @@
+import json
+
 from aiogram import Router, F, Bot
 from aiogram.types import Message
 from aiogram_i18n import I18nContext
@@ -32,13 +34,16 @@ async def handle_emoji(message: Message, i18n: I18nContext) -> None:
             return
 
         archive_data = await pack_zip(files)
-        caption = i18n.get("format-warning") if has_unsupported else None
-
-        await send_result(message, archive_data, caption)
+        await send_result(message, archive_data, i18n, has_unsupported)
         await status_message.delete()
 
         async with SessionLocal() as session:
-            await DownloadsCRUD.add_download(session, message.from_user.id, "emoji")
+            await DownloadsCRUD.add_download(
+                session,
+                message.from_user.id,
+                "emoji",
+                json.dumps(list(emoji_ids))
+            )
     except Exception as e:
         logger.exception(f"Error handling emoji: {e}")
         await status_message.edit_text(i18n.get("processing-error", error=str(e)))

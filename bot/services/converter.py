@@ -29,7 +29,12 @@ def _create_lottie_manifest() -> dict:
     }
 
 
-def _tgs_to_svg_string(tgs_data: bytes) -> str:  # TGS to PNG failed: list index out of range
+def _tgs_to_svg_string(tgs_data: bytes) -> str:
+    # TODO: Handle edge cases:
+    # - list index out of range 
+    # - 'TextDocument' object has no attribute 'color' 
+    # - float division by zero 
+    # - argument of type 'float' is not iterable 
     json_data = gzip.decompress(tgs_data)
     animation = parse_tgs(io.BytesIO(json_data))
     svg_buffer = io.StringIO()
@@ -40,7 +45,7 @@ def _tgs_to_svg_string(tgs_data: bytes) -> str:  # TGS to PNG failed: list index
 async def tgs_to_json(tgs_data: bytes) -> bytes | None:
     try:
         result = gzip.decompress(tgs_data)
-        logger.debug(f"TGS to JSON: {len(result)} bytes")
+        # logger.debug(f"TGS to JSON: {len(result)} bytes")
         return result
     except Exception as e:
         logger.error(f"TGS to JSON conversion failed: {e}")
@@ -59,7 +64,7 @@ async def tgs_to_lottie(tgs_data: bytes) -> bytes | None:
             zf.writestr('animations/animation.json', json_data)
 
         result = lottie_buffer.getvalue()
-        logger.debug(f"TGS to Lottie: {len(result)} bytes")
+        # logger.debug(f"TGS to Lottie: {len(result)} bytes")
         return result
     except Exception as e:
         logger.error(f"TGS to Lottie failed: {e}")
@@ -70,7 +75,7 @@ async def tgs_to_svg(tgs_data: bytes) -> bytes | None:
     try:
         svg_data = _tgs_to_svg_string(tgs_data)
         result = svg_data.encode('utf-8')
-        logger.debug(f"TGS to SVG: {len(result)} bytes")
+        # logger.debug(f"TGS to SVG: {len(result)} bytes")
         return result
     except Exception as e:
         logger.error(f"TGS to SVG failed: {e}")
@@ -85,7 +90,7 @@ async def tgs_to_png(tgs_data: bytes, width: int = 512, height: int = 512) -> by
             output_width=width,
             output_height=height
         )
-        logger.debug(f"TGS to PNG: {len(png_data)} bytes")
+        # logger.debug(f"TGS to PNG: {len(png_data)} bytes")
         return png_data
     except Exception as e:
         logger.error(f"TGS to PNG failed: {e}")

@@ -1,46 +1,51 @@
 start-message = 
-    👋 <b>Hello, {$name}</b>!
+    👋 <b>Hello, {$name}!</b>
     
-    I can help you extract and download Telegram content in <code>TGS</code>, <code>JSON</code>, and <code>LOTTIE</code> formats.
+    Extract and convert Telegram stickers and emoji to <code>TGS</code>, <code>JSON</code>, <code>Lottie</code>, <code>SVG</code>, and <code>PNG</code> formats.
     
-    🔸 <b>What can I do?</b> [/help]
-    • Extract emoji from messages
-    • Convert <b>animated</b> stickers to editable format
+    <b>🎯 What I can do:</b> [/help]
+    • Extract custom (premium) emoji from messages
+    • Convert animated stickers to editable formats
     • Download entire sticker/emoji packs
     
     📊 <b>Total downloads:</b> {$downloads}
     
-    Just send me emoji, forward a sticker, or paste a pack link!
+    <b>💬 Quick start:</b> Send me emoji, sticker, or paste a pack link!
     
     ⭐️ <a href="{$github}">GitHub</a> • 👨‍💻 <a href="{$developer}">Developer</a>
 
 help-message = 
-    1️⃣ <b>For Emoji:</b>
-    • Send or forward any message containing custom emoji
-    • You'll receive all emoji extracted automatically
+    📖 <b>How to use:</b>
     
-    2️⃣ <b>For Animated Stickers:</b>
-    • Send or forward any <b>animated</b> sticker
-    • I'll convert it to editable format
+    1️⃣ <b>Custom Emoji:</b>
+    • Send any message with custom (premium) emoji
+    • All emoji will be extracted and converted automatically
     
-    3️⃣ <b>For Entire Packs:</b>
-    • Send pack link: <code>https://t.me/addstickers/PackName</code>
+    2️⃣ <b>Animated Stickers:</b>
+    • Send or forward an animated sticker
+    • Converts to editable formats (JSON, Lottie, SVG, PNG)
+    
+    3️⃣ <b>Entire Packs:</b>
+    • Paste a pack link: <code>https://t.me/addstickers/PackName</code>
     • Or emoji pack: <code>https://t.me/addemoji/PackName</code>
-    • I'll download and convert the entire pack
+    • The entire pack will be downloaded and converted
+    
+    💡 <b>Tip:</b> For regular static emoji, use:
+    <code>https://t.me/addemoji/StaticEmoji</code>
+    <code>https://t.me/addstickers/StaticEmoji</code>
     
     📦 <b>Output formats:</b>
-    <code>.tgs</code> - Original Telegram format
-    <code>.json</code> - Lottie format for editing
-    <code>.lottie</code> - LottieFiles format (compressed)
-    <code>.svg</code> - Vector image (first frame)
-    <code>.png</code> - Raster image (512x512px)
+    • <code>.tgs</code> — Original Telegram format
+    • <code>.json</code> — Uncompressed Lottie animation
+    • <code>.lottie</code> — Compressed Lottie (LottieFiles format)
+    • <code>.svg</code> — Vector image (first frame)
+    • <code>.png</code> — Raster image (512×512px)
 
 format-warning = 
-    ⚠️ <b>Format Notice:</b>
+    ⚠️ <b>Format Notice</b>
     
-    Some emoji/stickers are in <b>WebM/WebP</b> formats and cannot be converted to editable Lottie.
-    
-    Only the original <code>.tgs</code> files were included for these items.
+    Some items are in <b>WebM/WebP</b> format and cannot be converted to Lottie.
+    Only original <code>.tgs</code> files were included for these.
 
 processing-error = 
     ❌ <b>Error:</b>
@@ -50,18 +55,35 @@ processing-error =
     Please try again.
 
 invalid-input = 
-    ❌ <b>Send only animated emoji or stickers</b>
+    ❌ <b>Supported:</b>
+    • Custom (premium) emoji
+    • Animated stickers (TGS)
+    • Sticker/emoji pack links
     
-    Use /help for instructions.
+    Type /help for instructions.
 
 processing = ⏳ <b>Processing your request...</b>
 
 processing-pack = ⏳ <b>Processing: {$current}/{$total}</b>
 
-processing-failed = ❌ <b>Processing failed. Please try again.</b>
+processing-failed = 
+    ❌ <b>Processing failed</b>
+    
+    Try again later.
 
-no-custom-emoji = ❌ <b>No suitable emoji found in your message.</b>
+pack-not-found = 
+    ❌ <b>Pack not found</b>
+    
+    Check the link and try again.
 
-no-animated-sticker = ❌ Please send or forward an <b>animated</b> sticker.
+no-custom-emoji = 
+    ❌ <b>Custom (premium) emoji not found</b>
+    
+    Send a message with custom emoji.
+
+no-animated-sticker = 
+    ❌ <b>Not an animated sticker</b>
+    
+    Send an <b>animated</b> sticker.
 
 rate-limit-alert = 🔒 Please wait {$seconds} seconds before sending next request!

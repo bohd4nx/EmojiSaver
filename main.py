@@ -9,7 +9,7 @@ from aiogram_i18n.cores.fluent_runtime_core import FluentRuntimeCore
 
 from bot.commands import start_router, help_router
 from bot.core import logger, setup_logging, config
-from bot.database import init_db
+from bot.database import init_db, close_db
 from bot.handlers import emoji, stickers, packs, fallback
 from bot.middlewares import LocaleMiddleware, RateLimitMiddleware
 
@@ -58,6 +58,7 @@ async def main() -> None:
         await dp.start_polling(bot, skip_updates=True)
     finally:
         await bot.session.close()
+        await close_db()
 
 
 if __name__ == "__main__":

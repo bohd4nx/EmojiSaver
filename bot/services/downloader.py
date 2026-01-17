@@ -1,4 +1,5 @@
 from aiogram import Bot
+from aiogram.exceptions import TelegramBadRequest
 
 from bot.core import logger
 from bot.services import tgs_to_json, tgs_to_lottie, tgs_to_svg, tgs_to_png
@@ -19,7 +20,7 @@ async def download_and_convert(file_id: str, bot: Bot) -> tuple[dict[str, bytes]
         data = file_data.read()
         logger.debug(f"Downloaded: {len(data)} bytes")
 
-        is_tgs = file_info.file_path.endswith('.tgs')
+        is_tgs = file_info.file_path.startswith('stickers/') or file_info.file_path.endswith('.tgs')
 
         if not is_tgs:
             logger.warning(f"Unsupported format: {file_info.file_path}")
@@ -40,6 +41,12 @@ async def download_and_convert(file_id: str, bot: Bot) -> tuple[dict[str, bytes]
         logger.debug(f"Conversion complete: {len(files)} files generated")
         return files, False
 
+    except TelegramBadRequest as e:
+        if "wrong file_id" in str(e) or "temporarily unavailable" in str(e):
+            logger.warning(f"File unavailable: {file_id}")
+        else:
+            logger.error(f"Telegram error for {file_id}: {e}")
+        return {}, False
     except Exception as e:
         logger.exception(f"Failed to process {file_id}: {e}")
         return {}, False

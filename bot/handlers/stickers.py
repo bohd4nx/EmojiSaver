@@ -33,9 +33,7 @@ async def handle_sticker(message: Message, i18n: I18nContext) -> None:
             return
 
         archive = await pack_zip(files)
-        caption = i18n.get("format-warning") if is_unsupported else None
-
-        await send_result(message, archive, caption)
+        await send_result(message, archive, i18n, is_unsupported)
         await status_message.delete()
 
         async with SessionLocal() as session:
