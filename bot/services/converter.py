@@ -1,11 +1,10 @@
 import gzip
 import io
 import json
+import tempfile
 import zipfile
 
-import cairosvg
-from lottie.exporters.svg import export_svg
-from lottie.parsers.tgs import parse_tgs
+from rlottie_python import LottieAnimation
 
 from bot.__meta__ import VERSION, TITLE, DESCRIPTION, GITHUB_URL, TELEGRAM_URL, DEVELOPER_URL
 from bot.core import logger
@@ -29,33 +28,17 @@ def _create_lottie_manifest() -> dict:
     }
 
 
-def _tgs_to_svg_string(tgs_data: bytes) -> str:
-    # TODO: Handle edge cases:
-    # - list index out of range 
-    # - 'TextDocument' object has no attribute 'color' 
-    # - float division by zero 
-    # - argument of type 'float' is not iterable 
-    json_data = gzip.decompress(tgs_data)
-    animation = parse_tgs(io.BytesIO(json_data))
-    svg_buffer = io.StringIO()
-    export_svg(animation, svg_buffer, frame=0)
-    return svg_buffer.getvalue()
-
-
 async def tgs_to_json(tgs_data: bytes) -> bytes | None:
     try:
-        result = gzip.decompress(tgs_data)
-        # logger.debug(f"TGS to JSON: {len(result)} bytes")
-        return result
+        return gzip.decompress(tgs_data)
     except Exception as e:
-        logger.error(f"TGS to JSON conversion failed: {e}")
+        logger.error(f"TGS to JSON failed: {e}")
         return None
 
 
 async def tgs_to_lottie(tgs_data: bytes) -> bytes | None:
     try:
         json_data = gzip.decompress(tgs_data)
-
         manifest = _create_lottie_manifest()
 
         lottie_buffer = io.BytesIO()
@@ -63,35 +46,46 @@ async def tgs_to_lottie(tgs_data: bytes) -> bytes | None:
             zf.writestr('manifest.json', json.dumps(manifest))
             zf.writestr('animations/animation.json', json_data)
 
-        result = lottie_buffer.getvalue()
-        # logger.debug(f"TGS to Lottie: {len(result)} bytes")
-        return result
+        return lottie_buffer.getvalue()
     except Exception as e:
         logger.error(f"TGS to Lottie failed: {e}")
         return None
 
 
-async def tgs_to_svg(tgs_data: bytes) -> bytes | None:
+async def tgs_to_apng(tgs_data: bytes, width: int = 512, height: int = 512) -> bytes | None:
     try:
-        svg_data = _tgs_to_svg_string(tgs_data)
-        result = svg_data.encode('utf-8')
-        # logger.debug(f"TGS to SVG: {len(result)} bytes")
-        return result
+        json_data = gzip.decompress(tgs_data)
+        json_str = json_data.decode('utf-8')
+
+        with tempfile.NamedTemporaryFile(suffix='.apng', delete=False) as tmp:
+            tmp_path = tmp.name
+
+        try:
+            with LottieAnimation.from_data(json_str) as anim:
+                anim.save_animation(tmp_path, width=width, height=height)
+
+            with open(tmp_path, 'rb') as f:
+                return f.read()
+        finally:
+            import os
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
     except Exception as e:
-        logger.error(f"TGS to SVG failed: {e}")
+        logger.error(f"TGS to APNG failed: {e}")
         return None
 
 
 async def tgs_to_png(tgs_data: bytes, width: int = 512, height: int = 512) -> bytes | None:
     try:
-        svg_data = _tgs_to_svg_string(tgs_data)
-        png_data = cairosvg.svg2png(
-            bytestring=svg_data.encode('utf-8'),
-            output_width=width,
-            output_height=height
-        )
-        # logger.debug(f"TGS to PNG: {len(png_data)} bytes")
-        return png_data
+        json_data = gzip.decompress(tgs_data)
+        json_str = json_data.decode('utf-8')
+        anim = LottieAnimation.from_data(json_str)
+
+        img = anim.render_pillow_frame(frame_num=0, width=width, height=height)
+        buffer = io.BytesIO()
+        img.save(buffer, format='PNG')
+
+        return buffer.getvalue()
     except Exception as e:
         logger.error(f"TGS to PNG failed: {e}")
         return None

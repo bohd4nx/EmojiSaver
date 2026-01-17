@@ -22,7 +22,7 @@
 - **Extract Custom Emoji** - Automatically extract all custom animated emoji from messages
 - **Convert Stickers** - Transform TGS animated stickers to editable formats
 - **Download Entire Packs** - Download full sticker or emoji packs from t.me links
-- **Multiple Export Formats** - Get TGS, JSON, Lottie, SVG, and PNG in one archive
+- **Multiple Export Formats** - Get TGS, JSON, Lottie, APNG, and PNG in one archive
 - **Multi-Part Archives** - Automatically split large packs into 45 MB parts
 - **Batch Processing** - Handle multiple emoji at once with progress tracking
 - **Multi-Language** - English and Russian interface support
@@ -95,7 +95,7 @@ python main.py
 | ---------- | --------- | --------------------------------------------- | ------------------------------------ |
 | **TGS**    | `.tgs`    | Telegram                                      | Upload as custom emoji/stickers      |
 | **JSON**   | `.json`   | Adobe After Effects, Figma, Lottie Web Player | Edit animations, web implementation  |
-| **SVG**    | `.svg`    | Illustrator, Inkscape, Figma                  | Vector editing, first frame preview  |
+| **APNG**   | `.apng`   | Web browsers, image viewers, animation tools  | Animated preview, full animation     |
 | **PNG**    | `.png`    | Photoshop, GIMP, Any image viewer             | Raster preview, 512x512 pixels       |
 | **Lottie** | `.lottie` | LottieFiles, Android/iOS apps                 | Cross-platform animation integration |
 
@@ -110,7 +110,7 @@ python main.py
 1. **Detection** - Identify custom emoji, animated stickers, or pack URLs
 2. **Download** - Retrieve TGS files from Telegram servers
 3. **Decompression** - Extract Lottie JSON from gzipped TGS
-4. **Conversion** - Create JSON, Lottie, SVG, and PNG formats
+4. **Conversion** - Create JSON, Lottie, APNG, and PNG formats
 5. **Packaging** - Compress files into ZIP archives (max 45 MB per part)
 6. **Delivery** - Send back to user with multi-part support if needed
 

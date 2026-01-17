@@ -91,7 +91,7 @@ async def process_items(
     has_unsupported = False
     total = len(items)
 
-    update_interval = 50 if total > 500 else 20 if total > 100 else 10
+    update_interval = 75 if total > 500 else 25 if total > 100 else 15
     logger.debug(f"Processing {total} items with update interval {update_interval}")
 
     for idx, item in enumerate(items, 1):

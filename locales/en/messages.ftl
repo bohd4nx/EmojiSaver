@@ -1,7 +1,7 @@
 start-message = 
     👋 <b>Hello, {$name}!</b>
     
-    Extract and convert Telegram stickers and emoji to <code>TGS</code>, <code>JSON</code>, <code>Lottie</code>, <code>SVG</code>, and <code>PNG</code> formats.
+    Extract and convert Telegram stickers and emoji to <code>TGS</code>, <code>JSON</code>, <code>Lottie</code>, <code>APNG</code>, and <code>PNG</code> formats.
     
     <b>🎯 What I can do:</b> [/help]
     • Extract custom (premium) emoji from messages
@@ -23,7 +23,7 @@ help-message =
     
     2️⃣ <b>Animated Stickers:</b>
     • Send or forward an animated sticker
-    • Converts to editable formats (JSON, Lottie, SVG, PNG)
+    • Converts to editable formats (JSON, Lottie, APNG, PNG)
     
     3️⃣ <b>Entire Packs:</b>
     • Paste a pack link: <code>https://t.me/addstickers/PackName</code>
@@ -38,8 +38,8 @@ help-message =
     • <code>.tgs</code> — Original Telegram format
     • <code>.json</code> — Uncompressed Lottie animation
     • <code>.lottie</code> — Compressed Lottie (LottieFiles format)
-    • <code>.svg</code> — Vector image (first frame)
-    • <code>.png</code> — Raster image (512×512px)
+    • <code>.apng</code> — Animated PNG (full animation)
+    • <code>.png</code> — Raster image (first frame, 512×512px)
 
 format-warning = 
     ⚠️ <b>Format Notice</b>

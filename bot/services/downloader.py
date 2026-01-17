@@ -2,7 +2,7 @@ from aiogram import Bot
 from aiogram.exceptions import TelegramBadRequest
 
 from bot.core import logger
-from bot.services import tgs_to_json, tgs_to_lottie, tgs_to_svg, tgs_to_png
+from bot.services import tgs_to_json, tgs_to_lottie, tgs_to_apng, tgs_to_png
 
 
 async def download_and_convert(file_id: str, bot: Bot) -> tuple[dict[str, bytes], bool]:
@@ -28,14 +28,14 @@ async def download_and_convert(file_id: str, bot: Bot) -> tuple[dict[str, bytes]
 
         json_data = await tgs_to_json(data)
         lottie_data = await tgs_to_lottie(data)
-        svg_data = await tgs_to_svg(data)
+        apng_data = await tgs_to_apng(data)
         png_data = await tgs_to_png(data)
 
         files = {
             f"{file_id}.tgs": data,
             f"{file_id}.json": json_data or b"",
             f"{file_id}.lottie": lottie_data or b"",
-            f"{file_id}.svg": svg_data or b"",
+            f"{file_id}.apng": apng_data or b"",
             f"{file_id}.png": png_data or b""
         }
         logger.debug(f"Conversion complete: {len(files)} files generated")
