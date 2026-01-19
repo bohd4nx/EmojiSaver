@@ -1,11 +1,11 @@
 start-message = 
     👋 <b>Hello, {$name}!</b>
     
-    Extract and convert Telegram stickers and emoji to <code>TGS</code>, <code>JSON</code>, <code>Lottie</code>, <code>APNG</code>, and <code>PNG</code> formats.
+    Download and convert Telegram stickers and emoji to <code>TGS</code>, <code>JSON</code>, <code>Lottie</code>, and <code>PNG</code> formats.
     
     <b>🎯 What I can do:</b> [/help]
     • Extract custom (premium) emoji from messages
-    • Convert animated stickers to editable formats
+    • Convert stickers to editable formats
     • Download entire sticker/emoji packs
     
     📊 <b>Total downloads:</b> {$downloads}
@@ -21,9 +21,9 @@ help-message =
     • Send any message with custom (premium) emoji
     • All emoji will be extracted and converted automatically
     
-    2️⃣ <b>Animated Stickers:</b>
-    • Send or forward an animated sticker
-    • Converts to editable formats (JSON, Lottie, APNG, PNG)
+    2️⃣ <b>Stickers:</b>
+    • Send or forward any sticker
+    • Converts to editable formats (JSON, Lottie, PNG)
     
     3️⃣ <b>Entire Packs:</b>
     • Paste a pack link: <code>https://t.me/addstickers/PackName</code>
@@ -38,14 +38,13 @@ help-message =
     • <code>.tgs</code> — Original Telegram format
     • <code>.json</code> — Uncompressed Lottie animation
     • <code>.lottie</code> — Compressed Lottie (LottieFiles format)
-    • <code>.apng</code> — Animated PNG (full animation)
     • <code>.png</code> — Raster image (first frame, 512×512px)
 
 format-warning = 
     ⚠️ <b>Format Notice</b>
     
-    Some items are in <b>WebM/WebP</b> format and cannot be converted to Lottie.
-    Only original <code>.tgs</code> files were included for these.
+    Some items could not be converted.
+    Original files were saved as-is.
 
 processing-error = 
     ❌ <b>Error:</b>
@@ -57,7 +56,7 @@ processing-error =
 invalid-input = 
     ❌ <b>Supported:</b>
     • Custom (premium) emoji
-    • Animated stickers (TGS)
+    • Stickers (any format)
     • Sticker/emoji pack links
     
     Type /help for instructions.
@@ -80,10 +79,5 @@ no-custom-emoji =
     ❌ <b>Custom (premium) emoji not found</b>
     
     Send a message with custom emoji.
-
-no-animated-sticker = 
-    ❌ <b>Not an animated sticker</b>
-    
-    Send an <b>animated</b> sticker.
 
 rate-limit-alert = 🔒 Please wait {$seconds} seconds before sending next request!

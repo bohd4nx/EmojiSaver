@@ -19,14 +19,13 @@
 
 ## Features
 
-- **Extract Custom Emoji** - Automatically extract all custom animated emoji from messages
-- **Convert Stickers** - Transform TGS animated stickers to editable formats
-- **Download Entire Packs** - Download full sticker or emoji packs from t.me links
-- **Multiple Export Formats** - Get TGS, JSON, Lottie, APNG, and PNG in one archive
-- **Multi-Part Archives** - Automatically split large packs into 45 MB parts
-- **Batch Processing** - Handle multiple emoji at once with progress tracking
-- **Multi-Language** - English and Russian interface support
-- **Simple Usage** - Just send emoji, stickers, or pack URLs
+- **Download Stickers** - Download and convert any Telegram sticker
+- **Extract Premium Emoji** - Extract custom emoji from messages
+- **Full Pack Download** - Download entire sticker/emoji packs from t.me links
+- **Smart Format Detection** - Auto-detect file format (TGS, WebM, WebP, etc.)
+- **Multi-Part Archives** - Auto-split large packs into 45 MB parts
+- **Batch Processing** - Handle multiple items with progress tracking
+- **Multi-Language** - English and Russian support
 
 ## Quick Start
 
@@ -70,11 +69,11 @@ python main.py
 3. **Download** ZIP archive with all formats
 4. **Edit** in your favorite animation software
 
-### Animated Sticker Conversion
+### Sticker Conversion
 
-1. **Forward or send** animated sticker to bot
+1. **Forward or send** any sticker to bot
 2. **Wait** for processing
-3. **Download** ZIP archive with all formats
+3. **Download** ZIP archive with converted formats (or original file)
 4. **Use** in After Effects, Figma, or LottieFiles
 
 ### Pack Download
@@ -95,19 +94,16 @@ python main.py
 | ---------- | --------- | --------------------------------------------- | ------------------------------------ |
 | **TGS**    | `.tgs`    | Telegram                                      | Upload as custom emoji/stickers      |
 | **JSON**   | `.json`   | Adobe After Effects, Figma, Lottie Web Player | Edit animations, web implementation  |
-| **APNG**   | `.apng`   | Web browsers, image viewers, animation tools  | Animated preview, full animation     |
 | **PNG**    | `.png`    | Photoshop, GIMP, Any image viewer             | Raster preview, 512x512 pixels       |
 | **Lottie** | `.lottie` | LottieFiles, Android/iOS apps                 | Cross-platform animation integration |
 
 ### Input Requirements
 
-- **Type**: Animated custom emoji or TGS stickers only
-- **Format**: TGS (Lottie-based) animations
-- **Note**: WebM/WebP video stickers are not supported for conversion
+- **Type**: Any Telegram sticker or custom emoji
+- **Supported Formats**: 
+  - TGS (Lottie-based animations) - **converted** to JSON, Lottie, PNG
+  - WebM, WebP, MP4, GIF - **saved as original** without conversion
 
-### Processing Algorithm
-
-1. **Detection** - Identify custom emoji, animated stickers, or pack URLs
 2. **Download** - Retrieve TGS files from Telegram servers
 3. **Decompression** - Extract Lottie JSON from gzipped TGS
 4. **Conversion** - Create JSON, Lottie, APNG, and PNG formats

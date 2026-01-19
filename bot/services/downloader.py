@@ -1,8 +1,33 @@
+from pathlib import Path
+
+import filetype
 from aiogram import Bot
 from aiogram.exceptions import TelegramBadRequest
 
 from bot.core import logger
-from bot.services import tgs_to_json, tgs_to_lottie, tgs_to_apng, tgs_to_png
+from bot.services import tgs_to_json, tgs_to_lottie, tgs_to_png
+
+# Non-convertible formats
+NON_CONVERTIBLE = {'webm', 'webp', 'mp4', 'gif'}
+
+
+def detect_format(data: bytes, fallback_path: str = '') -> str:
+    # Check for TGS (gzipped JSON) first - filetype doesn't recognize it
+    if len(data) >= 2 and data[:2] == b'\x1f\x8b':
+        return 'tgs'
+
+    # Use the filetype library for everything else
+    kind = filetype.guess(data)
+    if kind is not None:
+        return kind.extension
+
+    # Fallback to Telegram's file path extension if available
+    if fallback_path:
+        ext = Path(fallback_path).suffix.lstrip('.').lower()
+        if ext:
+            return ext
+
+    return 'dat'
 
 
 async def download_and_convert(file_id: str, bot: Bot) -> tuple[dict[str, bytes], bool]:
@@ -18,28 +43,32 @@ async def download_and_convert(file_id: str, bot: Bot) -> tuple[dict[str, bytes]
             return {}, False
 
         data = file_data.read()
-        logger.debug(f"Downloaded: {len(data)} bytes")
 
-        is_tgs = file_info.file_path.startswith('stickers/') or file_info.file_path.endswith('.tgs')
+        # Detect format: magic bytes → Telegram path → 'dat' fallback
+        ext = detect_format(data, file_info.file_path)
+        logger.debug(f"Downloaded: {len(data)} bytes, detected: {ext}")
 
-        if not is_tgs:
-            logger.warning(f"Unsupported format: {file_info.file_path}")
-            return {f"{file_id}.tgs": data}, True
+        # Non-convertible format - return an original file as-is
+        if ext in NON_CONVERTIBLE:
+            logger.debug(f"Non-convertible format: {ext}")
+            return {f"{file_id}.{ext}": data}, True
 
+        # Try to convert TGS
         json_data = await tgs_to_json(data)
         lottie_data = await tgs_to_lottie(data)
-        apng_data = await tgs_to_apng(data)
         png_data = await tgs_to_png(data)
 
-        files = {
-            f"{file_id}.tgs": data,
-            f"{file_id}.json": json_data or b"",
-            f"{file_id}.lottie": lottie_data or b"",
-            f"{file_id}.apng": apng_data or b"",
-            f"{file_id}.png": png_data or b""
-        }
-        logger.debug(f"Conversion complete: {len(files)} files generated")
-        return files, False
+        # Collect all files (original + successful conversions)
+        files = {f"{file_id}.{ext}": data}
+        files.update({k: v for k, v in {
+            f"{file_id}.json": json_data,
+            f"{file_id}.lottie": lottie_data,
+            f"{file_id}.png": png_data
+        }.items() if v})
+
+        has_conversions = len(files) > 1
+        logger.debug(f"Conversion complete: {len(files)} files, conversions: {has_conversions}")
+        return files, not has_conversions
 
     except TelegramBadRequest as e:
         if "wrong file_id" in str(e) or "temporarily unavailable" in str(e):

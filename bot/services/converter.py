@@ -1,7 +1,6 @@
 import gzip
 import io
 import json
-import tempfile
 import zipfile
 
 from rlottie_python import LottieAnimation
@@ -49,29 +48,6 @@ async def tgs_to_lottie(tgs_data: bytes) -> bytes | None:
         return lottie_buffer.getvalue()
     except Exception as e:
         logger.error(f"TGS to Lottie failed: {e}")
-        return None
-
-
-async def tgs_to_apng(tgs_data: bytes, width: int = 512, height: int = 512) -> bytes | None:
-    try:
-        json_data = gzip.decompress(tgs_data)
-        json_str = json_data.decode('utf-8')
-
-        with tempfile.NamedTemporaryFile(suffix='.apng', delete=False) as tmp:
-            tmp_path = tmp.name
-
-        try:
-            with LottieAnimation.from_data(json_str) as anim:
-                anim.save_animation(tmp_path, width=width, height=height)
-
-            with open(tmp_path, 'rb') as f:
-                return f.read()
-        finally:
-            import os
-            if os.path.exists(tmp_path):
-                os.unlink(tmp_path)
-    except Exception as e:
-        logger.error(f"TGS to APNG failed: {e}")
         return None
 
 

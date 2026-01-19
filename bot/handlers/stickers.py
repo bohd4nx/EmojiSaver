@@ -12,14 +12,10 @@ router = Router(name=__name__)
 
 @router.message(F.sticker)
 async def handle_sticker(message: Message, i18n: I18nContext) -> None:
-    logger.debug(f"Received sticker: animated={message.sticker.is_animated if message.sticker else False}")
-
-    if not message.sticker or not message.sticker.is_animated:
-        logger.debug("Sticker is not animated or missing")
-        await message.reply(i18n.get("no-animated-sticker"))
+    if not message.sticker:
         return
 
-    logger.debug(f"Processing animated sticker: {message.sticker.file_id} from user {message.from_user.id}")
+    logger.debug(f"Processing sticker: {message.sticker.file_id} from user {message.from_user.id}")
     status_message = await message.reply(i18n.get("processing"))
 
     try:
