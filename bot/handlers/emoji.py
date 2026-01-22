@@ -6,7 +6,7 @@ from aiogram_i18n import I18nContext
 
 from bot.core import logger
 from bot.database import SessionLocal
-from bot.database.crud import DownloadsCRUD
+from bot.database.crud import DownloadsCRUD, UserCRUD
 from bot.services import download_and_convert, pack_zip, send_result
 
 router = Router(name=__name__)
@@ -38,6 +38,12 @@ async def handle_emoji(message: Message, i18n: I18nContext) -> None:
         await status_message.delete()
 
         async with SessionLocal() as session:
+            await UserCRUD.get_or_create(
+                session=session,
+                user_id=message.from_user.id,
+                username=message.from_user.username,
+                full_name=message.from_user.full_name
+            )
             await DownloadsCRUD.add_download(
                 session,
                 message.from_user.id,
