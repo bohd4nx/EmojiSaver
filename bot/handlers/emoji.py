@@ -1,5 +1,3 @@
-import json
-
 from aiogram import Router, F, Bot
 from aiogram.types import Message
 from aiogram_i18n import I18nContext
@@ -8,6 +6,7 @@ from bot.core import logger
 from bot.database import SessionLocal
 from bot.database.crud import DownloadsCRUD, UserCRUD
 from bot.services import download_and_convert, pack_zip, send_result
+from bot.utils import emoji
 
 router = Router(name=__name__)
 
@@ -19,10 +18,10 @@ async def handle_emoji(message: Message, i18n: I18nContext) -> None:
 
     if not emoji_ids:
         logger.debug("No custom emoji found in message")
-        await message.reply(i18n.get("no-custom-emoji"))
+        await message.reply(i18n.get("no-custom-emoji", forbidden=emoji['forbidden']))
         return
 
-    status_message = await message.reply(i18n.get("processing"))
+    status_message = await message.reply(i18n.get("processing", processing=emoji['processing']))
     logger.debug(f"Started processing emoji batch: {emoji_ids}")
 
     try:
@@ -30,7 +29,7 @@ async def handle_emoji(message: Message, i18n: I18nContext) -> None:
 
         if not files:
             logger.warning("No files generated from emoji processing")
-            await status_message.edit_text(i18n.get("processing-failed"))
+            await status_message.edit_text(i18n.get("processing-failed", forbidden=emoji['forbidden']))
             return
 
         archive_data = await pack_zip(files)
@@ -48,11 +47,11 @@ async def handle_emoji(message: Message, i18n: I18nContext) -> None:
                 session,
                 message.from_user.id,
                 "emoji",
-                json.dumps(list(emoji_ids))
+                ",".join(emoji_ids)
             )
     except Exception as e:
         logger.exception(f"Error handling emoji: {e}")
-        await status_message.edit_text(i18n.get("processing-error", error=str(e)))
+        await status_message.edit_text(i18n.get("processing-error", error=str(e), forbidden=emoji['forbidden']))
 
 
 async def process_all_emojis(emoji_ids: set[str], bot: Bot) -> tuple[dict[str, bytes], bool]:

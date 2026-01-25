@@ -4,6 +4,8 @@ import zipfile
 from aiogram.types import Message, BufferedInputFile
 from aiogram_i18n import I18nContext
 
+from bot.utils import emoji
+
 MAX_ARCHIVE_SIZE = 45 * 1024 * 1024  # 45 MB
 
 
@@ -41,7 +43,7 @@ async def send_result(message: Message, archives: list[bytes], i18n: I18nContext
                       has_unsupported: bool = False, filename: str | None = None) -> None:
     bot_info = await message.bot.me()
     base_filename = f"{filename} by @{bot_info.username}" if filename else f"@{bot_info.username}"
-    caption = i18n.get("format-warning") if has_unsupported else None
+    caption = i18n.get("format-warning", warning=emoji['warning']) if has_unsupported else None
     total = len(archives)
 
     for idx, data in enumerate(archives, 1):

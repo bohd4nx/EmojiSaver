@@ -1,5 +1,3 @@
-from urllib.parse import urlparse
-
 from aiogram import Router, F
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import Message, Sticker
@@ -9,6 +7,7 @@ from bot.core import logger
 from bot.database import SessionLocal
 from bot.database.crud import DownloadsCRUD, UserCRUD
 from bot.services import download_and_convert, pack_zip, send_result
+from bot.utils import emoji
 
 router = Router(name=__name__)
 
@@ -18,38 +17,30 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
     url = message.text.strip()
     logger.debug(f"Received pack URL: {url} from user {message.from_user.id}")
 
-    parsed = urlparse(url)
-    path_parts = parsed.path.split('/')
-
-    if len(path_parts) < 3:
-        logger.warning(f"Invalid pack URL: {url}")
-        await message.reply(i18n.get("invalid-input"))
-        return
-
-    pack_type, pack_name = path_parts[1], path_parts[2]
-    logger.debug(f"Processing pack: type={pack_type}, name={pack_name}")
-
-    status_message = await message.reply(i18n.get("processing-pack", current=0, total=0))
+    pack_name = url.rstrip('/').split('/')[-1]
+    logger.debug(f"Processing pack: name={pack_name}")
 
     try:
         result = await get_pack_items(message, pack_name)
         if not result:
-            logger.warning(f"Pack not found: {pack_name}")
-            await status_message.edit_text(i18n.get("pack-not-found"))
+            await message.reply(i18n.get("pack-not-found", forbidden=emoji['forbidden']))
             return
 
         items, pack_title = result
 
         if not items:
             logger.warning(f"Empty pack: {pack_name}")
-            await status_message.edit_text(i18n.get("processing-failed"))
+            await message.reply(i18n.get("processing-failed", forbidden=emoji['forbidden']))
             return
+
+        status_message = await message.reply(
+            i18n.get("processing-pack", current=0, total=len(items), processing=emoji['processing']))
 
         files, has_unsupported = await process_items(items, message.bot, status_message, i18n)
 
         if not files:
             logger.warning("No files generated from pack")
-            await status_message.edit_text(i18n.get("processing-failed"))
+            await status_message.edit_text(i18n.get("processing-failed", forbidden=emoji['forbidden']))
             return
 
         archive = await pack_zip(files)
@@ -68,7 +59,7 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
 
     except Exception as e:
         logger.exception(f"Error handling pack: {e}")
-        await status_message.edit_text(i18n.get("processing-error", error=str(e)))
+        await status_message.edit_text(i18n.get("processing-error", error=str(e), forbidden=emoji['forbidden']))
 
 
 async def get_pack_items(
@@ -81,7 +72,7 @@ async def get_pack_items(
         return sticker_set.stickers, sticker_set.title
     except TelegramBadRequest as e:
         if "STICKERSET_INVALID" in str(e):
-            logger.warning(f"Invalid sticker set: {pack_name}")
+            logger.warning(f"Pack not found: {pack_name}")
         else:
             logger.error(f"Telegram error fetching pack {pack_name}: {e}")
         return None
@@ -104,7 +95,7 @@ async def process_items(
         if idx % update_interval == 0 or idx == total:
             try:
                 await status_message.edit_text(
-                    i18n.get("processing-pack", current=idx, total=total)
+                    i18n.get("processing-pack", current=idx, total=total, processing=emoji['processing'])
                 )
             except TelegramBadRequest as e:
                 logger.warning(f"Failed to update status: {e}")

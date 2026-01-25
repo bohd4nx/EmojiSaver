@@ -6,7 +6,7 @@ from aiogram_i18n import I18nContext
 from bot.__meta__ import GITHUB_URL, DEVELOPER_URL
 from bot.database import SessionLocal
 from bot.database.crud import UserCRUD, DownloadsCRUD
-from bot.utils import escape_html
+from bot.utils import escape_html, emoji
 
 router = Router(name=__name__)
 
@@ -29,8 +29,14 @@ async def start_command(message: Message, i18n: I18nContext) -> None:
         i18n.get(
             "start-message",
             name=escape_html(user.first_name),
-            github=GITHUB_URL,
+            github_link=GITHUB_URL,
             developer=DEVELOPER_URL,
-            downloads=total_downloads
+            downloads=total_downloads,
+            hello=emoji['hello'],
+            convert=emoji['convert'],
+            download=emoji['download'],
+            search=emoji['search'],
+            github=emoji['github'],
+            telegram=emoji['telegram']
         )
     )

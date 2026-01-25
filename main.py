@@ -35,7 +35,7 @@ def setup_middlewares(dp: Dispatcher, i18n: I18nMiddleware) -> None:
     dp.message.middleware(LocaleMiddleware())
     dp.message.middleware(RateLimitMiddleware())
     dp.callback_query.middleware(RateLimitMiddleware())
-    
+
     i18n.setup(dispatcher=dp)
 
 
@@ -56,11 +56,11 @@ async def main() -> None:
     i18n = await setup_i18n()
 
     dp = Dispatcher()
-    
-    for router in [start_router, help_router, packs.router, emoji.router, 
+
+    for router in [start_router, help_router, packs.router, emoji.router,
                    stickers.router, fallback.router]:
         dp.include_router(router)
-    
+
     setup_middlewares(dp, i18n)
 
     try:

@@ -6,6 +6,7 @@ from bot.core import logger
 from bot.database import SessionLocal
 from bot.database.crud import DownloadsCRUD, UserCRUD
 from bot.services import download_and_convert, pack_zip, send_result
+from bot.utils import emoji
 
 router = Router(name=__name__)
 
@@ -16,7 +17,7 @@ async def handle_sticker(message: Message, i18n: I18nContext) -> None:
         return
 
     logger.debug(f"Processing sticker: {message.sticker.file_id} from user {message.from_user.id}")
-    status_message = await message.reply(i18n.get("processing"))
+    status_message = await message.reply(i18n.get("processing", processing=emoji['processing']))
 
     try:
         files, is_unsupported = await download_and_convert(
@@ -25,7 +26,7 @@ async def handle_sticker(message: Message, i18n: I18nContext) -> None:
 
         if not files:
             logger.warning("No files generated from sticker")
-            await status_message.edit_text(i18n.get("processing-failed"))
+            await status_message.edit_text(i18n.get("processing-failed", forbidden=emoji['forbidden']))
             return
 
         archive = await pack_zip(files)
@@ -43,4 +44,4 @@ async def handle_sticker(message: Message, i18n: I18nContext) -> None:
 
     except Exception as e:
         logger.exception(f"Error handling sticker: {e}")
-        await status_message.edit_text(i18n.get("processing-error", error=str(e)))
+        await status_message.edit_text(i18n.get("processing-error", error=str(e), forbidden=emoji['forbidden']))

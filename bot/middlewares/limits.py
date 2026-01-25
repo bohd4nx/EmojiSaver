@@ -7,6 +7,7 @@ from aiogram.types import CallbackQuery
 from aiogram_i18n import I18nContext
 
 from bot.core import config
+from bot.utils import emoji
 
 
 class RateLimitMiddleware(BaseMiddleware):
@@ -21,7 +22,7 @@ class RateLimitMiddleware(BaseMiddleware):
         if wait_seconds:
             i18n: I18nContext = data.get("i18n")
             await event.answer(
-                i18n.get("rate-limit-alert", seconds=wait_seconds),
+                i18n.get("rate-limit-alert", seconds=wait_seconds, forbidden=emoji['forbidden']),
                 show_alert=True
             )
             return None
