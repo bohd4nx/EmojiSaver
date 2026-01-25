@@ -3,11 +3,12 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import Message, Sticker
 from aiogram_i18n import I18nContext
 
+from bot.__meta__ import DEVELOPER_URL
 from bot.core import logger
 from bot.database import SessionLocal
 from bot.database.crud import DownloadsCRUD, UserCRUD
 from bot.services import download_and_convert, pack_zip, send_result
-from bot.utils import emoji
+from bot.utils import emoji, status_message
 
 router = Router(name=__name__)
 
@@ -30,36 +31,38 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
 
         if not items:
             logger.warning(f"Empty pack: {pack_name}")
-            await message.reply(i18n.get("processing-failed", forbidden=emoji['forbidden']))
+            await message.reply(i18n.get("processing-failed", forbidden=emoji['forbidden'], telegram=emoji['telegram'],
+                                         developer=DEVELOPER_URL))
             return
 
-        status_message = await message.reply(
-            i18n.get("processing-pack", current=0, total=len(items), processing=emoji['processing']))
+        async with status_message(message, i18n, "processing-pack", current=0, total=len(items)) as status_msg:
+            files, has_unsupported = await process_items(items, message.bot, status_msg, i18n)
 
-        files, has_unsupported = await process_items(items, message.bot, status_message, i18n)
+            if not files:
+                logger.warning("No files generated from pack")
+                await status_msg.edit_text(
+                    i18n.get("processing-failed", forbidden=emoji['forbidden'], telegram=emoji['telegram'],
+                             developer=DEVELOPER_URL))
+                return
 
-        if not files:
-            logger.warning("No files generated from pack")
-            await status_message.edit_text(i18n.get("processing-failed", forbidden=emoji['forbidden']))
-            return
-
-        archive = await pack_zip(files)
-        await send_result(message, archive, i18n, has_unsupported, pack_title)
-        await status_message.delete()
-        logger.debug(f"Pack processed successfully: {pack_title}")
+            archive = await pack_zip(files)
+            await send_result(message, archive, i18n, has_unsupported, pack_title)
+            logger.debug(f"Pack processed successfully: {pack_title}")
 
         async with SessionLocal() as session:
             await UserCRUD.get_or_create(
-                session=session,
-                user_id=message.from_user.id,
-                username=message.from_user.username,
-                full_name=message.from_user.full_name
+                session,
+                message.from_user.id,
+                message.from_user.username,
+                message.from_user.full_name
             )
             await DownloadsCRUD.add_download(session, message.from_user.id, "pack", pack_name)
 
     except Exception as e:
         logger.exception(f"Error handling pack: {e}")
-        await status_message.edit_text(i18n.get("processing-error", error=str(e), forbidden=emoji['forbidden']))
+        await message.reply(
+            i18n.get("processing-error", error=str(e), forbidden=emoji['forbidden'], telegram=emoji['telegram'],
+                     developer=DEVELOPER_URL))
 
 
 async def get_pack_items(

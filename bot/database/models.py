@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import String, DateTime, func, BigInteger, ForeignKey
+from sqlalchemy import String, DateTime, func, BigInteger, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from bot.database.base import Base
@@ -25,7 +25,7 @@ class User(Base):
 class Download(Base):
     __tablename__ = "downloads"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False,
                                          index=True)
     content_type: Mapped[str] = mapped_column(String(50), nullable=False, index=True)

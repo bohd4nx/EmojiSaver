@@ -51,7 +51,7 @@ processing-error =
     
     <code>{$error}</code>
     
-    Пожалуйста, попробуйте снова.
+    Пожалуйста, попробуйте снова или обратитесь к {$telegram} <a href="{$developer}">разработчику</a>
 
 processing = {$processing} <b>Обрабатываю ваш запрос...</b>
 
@@ -60,7 +60,7 @@ processing-pack = {$processing} <b>Обрабатываю: {$current}/{$total}</
 processing-failed = 
     {$forbidden} <b>Обработка не удалась</b>
     
-    Попробуй позже.
+    Попробуй позже или обратитесь к {$telegram} <a href="{$developer}">разработчику</a>
 
 pack-not-found = 
     {$forbidden} <b>Пак не найден</b>
