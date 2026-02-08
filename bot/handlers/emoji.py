@@ -9,7 +9,7 @@ from bot.core import logger
 from bot.database import SessionLocal
 from bot.database.crud import DownloadsCRUD, UserCRUD
 from bot.services import download_and_convert, pack_zip, send_result
-from bot.utils import emoji, status_message
+from bot.utils import status_message
 
 router = Router(name=__name__)
 
@@ -21,7 +21,7 @@ async def handle_emoji(message: Message, i18n: I18nContext) -> None:
 
     if not emoji_ids:
         logger.debug("No custom emoji found in message")
-        await message.reply(i18n.get("no-custom-emoji", forbidden=emoji['forbidden']))
+        await message.reply(i18n.get("no-custom-emoji"))
         return
 
     try:
@@ -30,9 +30,7 @@ async def handle_emoji(message: Message, i18n: I18nContext) -> None:
 
             if not files:
                 logger.warning("No files generated from emoji processing")
-                await status_msg.edit_text(
-                    i18n.get("processing-failed", forbidden=emoji['forbidden'], telegram=emoji['telegram'],
-                             developer=DEVELOPER_URL))
+                await status_msg.edit_text(i18n.get("processing-failed", developer=DEVELOPER_URL))
                 return
 
             archive_data = await pack_zip(files)
@@ -54,9 +52,7 @@ async def handle_emoji(message: Message, i18n: I18nContext) -> None:
 
     except Exception as e:
         logger.exception(f"Error handling emoji: {e}")
-        await message.reply(
-            i18n.get("processing-error", error=str(e), forbidden=emoji['forbidden'], telegram=emoji['telegram'],
-                     developer=DEVELOPER_URL))
+        await message.reply(i18n.get("processing-error", error=str(e), developer=DEVELOPER_URL))
 
 
 async def process_all_emojis(emoji_ids: set[str], bot: Bot) -> tuple[dict[str, bytes], bool]:

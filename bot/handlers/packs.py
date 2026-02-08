@@ -8,7 +8,7 @@ from bot.core import logger
 from bot.database import SessionLocal
 from bot.database.crud import DownloadsCRUD, UserCRUD
 from bot.services import download_and_convert, pack_zip, send_result
-from bot.utils import emoji, status_message
+from bot.utils import status_message
 
 router = Router(name=__name__)
 
@@ -24,15 +24,14 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
     try:
         result = await get_pack_items(message, pack_name)
         if not result:
-            await message.reply(i18n.get("pack-not-found", forbidden=emoji['forbidden']))
+            await message.reply(i18n.get("pack-not-found"))
             return
 
         items, pack_title = result
 
         if not items:
             logger.warning(f"Empty pack: {pack_name}")
-            await message.reply(i18n.get("processing-failed", forbidden=emoji['forbidden'], telegram=emoji['telegram'],
-                                         developer=DEVELOPER_URL))
+            await message.reply(i18n.get("processing-failed", developer=DEVELOPER_URL))
             return
 
         async with status_message(message, i18n, "processing-pack", current=0, total=len(items)) as status_msg:
@@ -40,9 +39,7 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
 
             if not files:
                 logger.warning("No files generated from pack")
-                await status_msg.edit_text(
-                    i18n.get("processing-failed", forbidden=emoji['forbidden'], telegram=emoji['telegram'],
-                             developer=DEVELOPER_URL))
+                await status_msg.edit_text(i18n.get("processing-failed", developer=DEVELOPER_URL))
                 return
 
             archive = await pack_zip(files)
@@ -60,9 +57,7 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
 
     except Exception as e:
         logger.exception(f"Error handling pack: {e}")
-        await message.reply(
-            i18n.get("processing-error", error=str(e), forbidden=emoji['forbidden'], telegram=emoji['telegram'],
-                     developer=DEVELOPER_URL))
+        await message.reply(i18n.get("processing-error", error=str(e), developer=DEVELOPER_URL))
 
 
 async def get_pack_items(
@@ -97,9 +92,7 @@ async def process_items(
     for idx, item in enumerate(items, 1):
         if idx % update_interval == 0 or idx == total:
             try:
-                await status_message.edit_text(
-                    i18n.get("processing-pack", current=idx, total=total, processing=emoji['processing'])
-                )
+                await status_message.edit_text(i18n.get("processing-pack", current=idx, total=total))
             except TelegramBadRequest as e:
                 logger.warning(f"Failed to update status: {e}")
             except Exception as e:

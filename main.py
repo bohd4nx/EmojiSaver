@@ -14,31 +14,6 @@ from bot.handlers import emoji, stickers, packs, fallback
 from bot.middlewares import LocaleMiddleware, RateLimitMiddleware
 
 
-async def set_bot_commands(bot: Bot) -> None:
-    commands = [
-        BotCommand(command="start", description="🚀 Start the bot"),
-        BotCommand(command="help", description="❓ Show help information"),
-    ]
-    await bot.set_my_commands(commands)
-
-
-async def setup_i18n() -> I18nMiddleware:
-    i18n_core = FluentRuntimeCore(path="locales/{locale}")
-    await i18n_core.startup()
-    logger.info(f"Loaded locales: {i18n_core.available_locales}")
-    return I18nMiddleware(core=i18n_core, default_locale="en")
-
-
-def setup_middlewares(dp: Dispatcher, i18n: I18nMiddleware) -> None:
-    dp.update.middleware(LocaleMiddleware())
-    dp.callback_query.middleware(LocaleMiddleware())
-    dp.message.middleware(LocaleMiddleware())
-    dp.message.middleware(RateLimitMiddleware())
-    dp.callback_query.middleware(RateLimitMiddleware())
-
-    i18n.setup(dispatcher=dp)
-
-
 async def main() -> None:
     setup_logging()
     await init_db()
@@ -51,9 +26,15 @@ async def main() -> None:
         )
     )
 
-    await set_bot_commands(bot)
+    await bot.set_my_commands([
+        BotCommand(command="start", description="🚀 Start the bot"),
+        BotCommand(command="help", description="❓ Show help information"),
+    ])
 
-    i18n = await setup_i18n()
+    i18n_core = FluentRuntimeCore(path="locales/{locale}")
+    await i18n_core.startup()
+    # logger.info(f"Loaded locales: {i18n_core.available_locales}")
+    i18n = I18nMiddleware(core=i18n_core, default_locale="en")
 
     dp = Dispatcher()
 
@@ -61,7 +42,12 @@ async def main() -> None:
                    stickers.router, fallback.router]:
         dp.include_router(router)
 
-    setup_middlewares(dp, i18n)
+    dp.update.middleware(LocaleMiddleware())
+    dp.callback_query.middleware(LocaleMiddleware())
+    dp.message.middleware(LocaleMiddleware())
+    dp.message.middleware(RateLimitMiddleware())
+    dp.callback_query.middleware(RateLimitMiddleware())
+    i18n.setup(dispatcher=dp)
 
     try:
         await dp.start_polling(

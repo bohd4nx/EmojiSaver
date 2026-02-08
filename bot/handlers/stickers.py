@@ -7,7 +7,7 @@ from bot.core import logger
 from bot.database import SessionLocal
 from bot.database.crud import DownloadsCRUD, UserCRUD
 from bot.services import download_and_convert, pack_zip, send_result
-from bot.utils import emoji, status_message
+from bot.utils import status_message
 
 router = Router(name=__name__)
 
@@ -27,9 +27,7 @@ async def handle_sticker(message: Message, i18n: I18nContext) -> None:
 
             if not files:
                 logger.warning("No files generated from sticker")
-                await status_msg.edit_text(
-                    i18n.get("processing-failed", forbidden=emoji['forbidden'], telegram=emoji['telegram'],
-                             developer=DEVELOPER_URL))
+                await status_msg.edit_text(i18n.get("processing-failed", developer=DEVELOPER_URL))
                 return
 
             archive = await pack_zip(files)
@@ -46,6 +44,4 @@ async def handle_sticker(message: Message, i18n: I18nContext) -> None:
 
     except Exception as e:
         logger.exception(f"Error handling sticker: {e}")
-        await message.reply(
-            i18n.get("processing-error", error=str(e), forbidden=emoji['forbidden'], telegram=emoji['telegram'],
-                     developer=DEVELOPER_URL))
+        await message.reply(i18n.get("processing-error", error=str(e), developer=DEVELOPER_URL))

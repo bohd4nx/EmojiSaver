@@ -1,5 +1,5 @@
 APP_NAME = "EmojiSaver"
-VERSION = "2026.1.1"
+VERSION = "2026.1.2"
 TITLE = "Emoji Saver Bot"
 DESCRIPTION = "Download and convert Telegram emoji, stickers, and packs to TGS, JSON, Lottie, SVG, and PNG formats"
 

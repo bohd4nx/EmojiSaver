@@ -1,10 +1,10 @@
 import io
+import random
 import zipfile
 
+from aiogram.enums import ChatAction
 from aiogram.types import Message, BufferedInputFile
 from aiogram_i18n import I18nContext
-
-from bot.utils import emoji
 
 MAX_ARCHIVE_SIZE = 45 * 1024 * 1024  # 45 MB
 
@@ -43,13 +43,18 @@ async def send_result(message: Message, archives: list[bytes], i18n: I18nContext
                       has_unsupported: bool = False, filename: str | None = None) -> None:
     bot_info = await message.bot.me()
     base_filename = f"{filename} by @{bot_info.username}" if filename else f"@{bot_info.username}"
-    caption = i18n.get("format-warning", warning=emoji['warning']) if has_unsupported else None
+    caption = i18n.get("format-warning") if has_unsupported else None
     total = len(archives)
 
     for idx, data in enumerate(archives, 1):
         current_filename = f"{base_filename} (part {idx}).zip" if total > 1 else f"{base_filename}.zip"
 
+        await message.bot.send_chat_action(message.chat.id, ChatAction.UPLOAD_DOCUMENT)
         await message.reply_document(
             document=BufferedInputFile(data, filename=current_filename),
             caption=caption
         )
+        
+    # Show donate message with ~5% probability (approximately every 20 downloads)
+    if random.random() < 0.05:
+        await message.answer(i18n.get("donate-message"))
