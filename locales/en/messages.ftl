@@ -78,15 +78,6 @@ donate-message =
     Support the project and help keep it running!
     Your donation helps maintain and improve the bot.
     
-    <tg-emoji emoji-id="5258204546391351475">💰</tg-emoji> <b>Crypto donations:</b>
+    <tg-emoji emoji-id="5258204546391351475">💰</tg-emoji> <a href="https://t.me/send?start=IV33ltNgzUFL">Donate via CryptoBot</a>
     
-    <b>USDT (TRC20):</b>
-    <code>TP7VPnyhoTg8tctxQRVKHX7CZpRMo4DHrS</code>
-    
-    <b>TON | USDT (TON):</b>
-    <code>UQCppfw5DxWgdVHf3zkmZS8k1mt9oAUYxQLwq2fz3nhO8No5</code>
-    
-    <b>USDT (BEP20):</b>
-    <code>0x00216b150b31C843d4b75cE91A113053cb72ac6E</code>
-    
-    <tg-emoji emoji-id="5260268501515377807">📣</tg-emoji> <b>Check out <a href="https://t.me/id2757542991">my channel</a>!</b>
+    <tg-emoji emoji-id="5260268501515377807">📣</tg-emoji> <b>If you want, you can follow <a href="https://t.me/id2757542991">my channel</a> for updates and other interesting projects.</b>
