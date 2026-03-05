@@ -5,7 +5,7 @@ from aiogram_i18n import I18nContext
 from bot.__meta__ import DEVELOPER_URL
 from bot.core import logger
 from bot.database import SessionLocal
-from bot.database.crud import DownloadsCRUD, UserCRUD
+from bot.database.crud import get_or_create_user, add_download
 from bot.services import download_and_convert, pack_zip, send_result
 from bot.utils import status_message
 
@@ -34,13 +34,13 @@ async def handle_sticker(message: Message, i18n: I18nContext) -> None:
             await send_result(message, archive, i18n, is_unsupported)
 
         async with SessionLocal() as session:
-            await UserCRUD.get_or_create(
+            await get_or_create_user(
                 session,
                 message.from_user.id,
                 message.from_user.username,
                 message.from_user.full_name
             )
-            await DownloadsCRUD.add_download(session, message.from_user.id, "sticker", message.sticker.file_id)
+            await add_download(session, message.from_user.id, "sticker", message.sticker.file_id)
 
     except Exception as e:
         logger.exception(f"Error handling sticker: {e}")

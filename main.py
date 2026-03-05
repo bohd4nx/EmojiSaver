@@ -7,10 +7,10 @@ from aiogram.types import BotCommand
 from aiogram_i18n import I18nMiddleware
 from aiogram_i18n.cores.fluent_runtime_core import FluentRuntimeCore
 
-from bot.commands import start_router, help_router
-from bot.core import logger, setup_logging, config
-from bot.database import init_db, close_db
-from bot.handlers import emoji, stickers, packs, fallback
+from bot.commands import help_router, start_router
+from bot.core import config, logger, setup_logging
+from bot.database import close_db, init_db
+from bot.handlers import emoji, fallback, packs, stickers
 from bot.middlewares import LocaleMiddleware, RateLimitMiddleware
 
 
@@ -22,32 +22,37 @@ async def main() -> None:
         token=config.BOT_TOKEN,
         default=DefaultBotProperties(
             parse_mode=ParseMode.HTML,
-            link_preview_is_disabled=True
-        )
+            link_preview_is_disabled=True,
+        ),
     )
 
-    await bot.set_my_commands([
-        BotCommand(command="start", description="🚀 Start the bot"),
-        BotCommand(command="help", description="❓ Show help information"),
-    ])
+    await bot.set_my_commands(
+        [
+            BotCommand(command="start", description="🚀 Start the bot"),
+            BotCommand(command="help", description="❓ Show help information"),
+        ]
+    )
 
     i18n_core = FluentRuntimeCore(path="locales/{locale}")
     await i18n_core.startup()
-    # logger.info(f"Loaded locales: {i18n_core.available_locales}")
-    i18n = I18nMiddleware(core=i18n_core, default_locale="en")
+    logger.info(f"Loaded locales: {i18n_core.available_locales}")
 
     dp = Dispatcher()
+    dp.include_routers(
+        start_router,
+        help_router,
+        packs.router,
+        emoji.router,
+        stickers.router,
+        fallback.router,
+    )
 
-    for router in [start_router, help_router, packs.router, emoji.router,
-                   stickers.router, fallback.router]:
-        dp.include_router(router)
+    i18n = I18nMiddleware(core=i18n_core, default_locale="en")
+    i18n.setup(dispatcher=dp)
 
     dp.update.middleware(LocaleMiddleware())
-    dp.callback_query.middleware(LocaleMiddleware())
-    dp.message.middleware(LocaleMiddleware())
     dp.message.middleware(RateLimitMiddleware())
     dp.callback_query.middleware(RateLimitMiddleware())
-    i18n.setup(dispatcher=dp)
 
     try:
         await dp.start_polling(
@@ -59,7 +64,6 @@ async def main() -> None:
         )
     finally:
         await i18n.core.shutdown()
-        await bot.session.close()
         await close_db()
 
 
