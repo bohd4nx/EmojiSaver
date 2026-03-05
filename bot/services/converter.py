@@ -5,11 +5,11 @@ import zipfile
 
 from rlottie_python import LottieAnimation
 
-from bot.__meta__ import VERSION, TITLE, DESCRIPTION, GITHUB_URL, TELEGRAM_URL, DEVELOPER_URL
+from bot.__meta__ import DESCRIPTION, DEVELOPER_URL, GITHUB_URL, TELEGRAM_URL, TITLE, VERSION
 from bot.core import logger
 
 
-def _create_lottie_manifest() -> dict:
+def _lottie_manifest() -> dict:
     return {
         "version": VERSION,
         "generator": TITLE,
@@ -18,12 +18,7 @@ def _create_lottie_manifest() -> dict:
         "generator_url": GITHUB_URL,
         "created": f"via {TELEGRAM_URL}",
         "revision": 1,
-        "animations": [{
-            "id": "animation",
-            "direction": 1,
-            "speed": 1,
-            "layers": []
-        }]
+        "animations": [{"id": "animation", "direction": 1, "speed": 1, "layers": []}],
     }
 
 
@@ -38,14 +33,11 @@ async def tgs_to_json(tgs_data: bytes) -> bytes | None:
 async def tgs_to_lottie(tgs_data: bytes) -> bytes | None:
     try:
         json_data = gzip.decompress(tgs_data)
-        manifest = _create_lottie_manifest()
-
-        lottie_buffer = io.BytesIO()
-        with zipfile.ZipFile(lottie_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:
-            zf.writestr('manifest.json', json.dumps(manifest))
-            zf.writestr('animations/animation.json', json_data)
-
-        return lottie_buffer.getvalue()
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+            zf.writestr("manifest.json", json.dumps(_lottie_manifest()))
+            zf.writestr("animations/animation.json", json_data)
+        return buffer.getvalue()
     except Exception as e:
         logger.error(f"TGS to Lottie failed: {e}")
         return None
@@ -53,14 +45,11 @@ async def tgs_to_lottie(tgs_data: bytes) -> bytes | None:
 
 async def tgs_to_png(tgs_data: bytes, width: int = 512, height: int = 512) -> bytes | None:
     try:
-        json_data = gzip.decompress(tgs_data)
-        json_str = json_data.decode('utf-8')
+        json_str = gzip.decompress(tgs_data).decode("utf-8")
         anim = LottieAnimation.from_data(json_str)
-
         img = anim.render_pillow_frame(frame_num=0, width=width, height=height)
         buffer = io.BytesIO()
-        img.save(buffer, format='PNG')
-
+        img.save(buffer, format="PNG")
         return buffer.getvalue()
     except Exception as e:
         logger.error(f"TGS to PNG failed: {e}")

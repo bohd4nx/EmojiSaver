@@ -1,4 +1,6 @@
-from aiogram import Router, F
+import contextlib
+
+from aiogram import Bot, F, Router
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import Message, Sticker
 from aiogram_i18n import I18nContext
@@ -6,7 +8,7 @@ from aiogram_i18n import I18nContext
 from bot.__meta__ import DEVELOPER_URL
 from bot.core import logger
 from bot.database import SessionLocal
-from bot.database.crud import get_or_create_user, add_download
+from bot.database.crud import add_download, get_or_create_user
 from bot.services import download_and_convert, pack_zip, send_result
 from bot.utils import status_message
 
@@ -15,11 +17,7 @@ router = Router(name=__name__)
 
 @router.message(F.text.regexp(r"https://t\.me/(addstickers|addemoji)/\w+"))
 async def handle_pack(message: Message, i18n: I18nContext) -> None:
-    url = message.text.strip()
-    logger.debug(f"Received pack URL: {url} from user {message.from_user.id}")
-
-    pack_name = url.rstrip('/').split('/')[-1]
-    logger.debug(f"Processing pack: name={pack_name}")
+    pack_name = message.text.strip().rstrip("/").split("/")[-1]
 
     try:
         result = await get_pack_items(message, pack_name)
@@ -28,7 +26,6 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
             return
 
         items, pack_title = result
-
         if not items:
             logger.warning(f"Empty pack: {pack_name}")
             await message.reply(i18n.get("processing-failed", developer=DEVELOPER_URL))
@@ -38,35 +35,25 @@ async def handle_pack(message: Message, i18n: I18nContext) -> None:
             files, has_unsupported = await process_items(items, message.bot, status_msg, i18n)
 
             if not files:
-                logger.warning("No files generated from pack")
+                logger.warning(f"No files generated from pack {pack_name}")
                 await status_msg.edit_text(i18n.get("processing-failed", developer=DEVELOPER_URL))
                 return
 
-            archive = await pack_zip(files)
-            await send_result(message, archive, i18n, has_unsupported, pack_title)
-            logger.debug(f"Pack processed successfully: {pack_title}")
+            await send_result(message, await pack_zip(files), i18n, has_unsupported, pack_title)
 
         async with SessionLocal() as session:
-            await get_or_create_user(
-                session,
-                message.from_user.id,
-                message.from_user.username,
-                message.from_user.full_name
-            )
-            await add_download(session, message.from_user.id, "pack", pack_name)
+            user = message.from_user
+            await get_or_create_user(session, user.id, user.username, user.first_name)
+            await add_download(session, user.id, "pack", pack_name)
 
     except Exception as e:
         logger.exception(f"Error handling pack: {e}")
         await message.reply(i18n.get("processing-error", error=str(e), developer=DEVELOPER_URL))
 
 
-async def get_pack_items(
-        message: Message, pack_name: str
-) -> tuple[list[Sticker], str] | None:
+async def get_pack_items(message: Message, pack_name: str) -> tuple[list[Sticker], str] | None:
     try:
-        # logger.debug(f"Fetching pack: type={pack_type}, name={pack_name}")
         sticker_set = await message.bot.get_sticker_set(pack_name)
-        logger.debug(f"Found pack: {sticker_set.title}, items={len(sticker_set.stickers)}")
         return sticker_set.stickers, sticker_set.title
     except TelegramBadRequest as e:
         if "STICKERSET_INVALID" in str(e):
@@ -77,33 +64,26 @@ async def get_pack_items(
 
 
 async def process_items(
-        items: list[Sticker],
-        bot,
-        status_message: Message,
-        i18n: I18nContext
-) -> tuple[dict, bool]:
-    files = {}
+    items: list[Sticker],
+    bot: Bot,
+    status_msg: Message,
+    i18n: I18nContext,
+) -> tuple[dict[str, bytes], bool]:
+    files: dict[str, bytes] = {}
     has_unsupported = False
     total = len(items)
-
     update_interval = 75 if total > 500 else 25 if total > 100 else 15
-    logger.debug(f"Processing {total} items with update interval {update_interval}")
 
     for idx, item in enumerate(items, 1):
         if idx % update_interval == 0 or idx == total:
-            try:
-                await status_message.edit_text(i18n.get("processing-pack", current=idx, total=total))
-            except TelegramBadRequest as e:
-                logger.warning(f"Failed to update status: {e}")
-            except Exception as e:
-                logger.error(f"Unexpected error updating status: {e}")
+            with contextlib.suppress(TelegramBadRequest):
+                await status_msg.edit_text(i18n.get("processing-pack", current=idx, total=total))
 
         try:
             item_files, is_unsupported = await download_and_convert(item.file_id, bot)
-            files.update(item_files)
+            files |= item_files
             has_unsupported = has_unsupported or is_unsupported
         except Exception as e:
             logger.error(f"Failed to process item {idx}: {e}")
 
-    logger.debug(f"Processed {total} items: {len(files)} files, has_unsupported={has_unsupported}")
     return files, has_unsupported

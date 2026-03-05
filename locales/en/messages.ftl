@@ -45,7 +45,7 @@ format-warning =
     Original files were saved as-is.
 
 processing-error = 
-    <tg-emoji emoji-id="5258474669769497337">🚫</tg-emoji> <b>Error:</b>
+    <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> <b>Error:</b>
     
     <code>{$error}</code>
     
@@ -56,21 +56,21 @@ processing = <tg-emoji emoji-id="5258514780469075716">📂</tg-emoji> <b>Process
 processing-pack = <tg-emoji emoji-id="5258514780469075716">📂</tg-emoji> <b>Processing: {$current}/{$total}</b>
 
 processing-failed = 
-    <tg-emoji emoji-id="5258474669769497337">🚫</tg-emoji> <b>Processing failed</b>
+    <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> <b>Processing failed</b>
     
     Try again later or contact <tg-emoji emoji-id="5258073068852485953">✈️</tg-emoji> <a href="{$developer}">developer</a>
 
 pack-not-found = 
-    <tg-emoji emoji-id="5258474669769497337">🚫</tg-emoji> <b>Pack not found</b>
+    <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> <b>Pack not found</b>
     
     Check the link and try again.
 
 no-custom-emoji = 
-    <tg-emoji emoji-id="5258474669769497337">🚫</tg-emoji> <b>Custom (premium) emoji not found</b>
+    <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> <b>Custom (premium) emoji not found</b>
     
     Send a message with custom emoji.
 
-rate-limit-alert = <tg-emoji emoji-id="5258474669769497337">🚫</tg-emoji> Please wait {$seconds} seconds before sending next request!
+rate-limit-alert = <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> Please wait {$seconds} seconds before sending next request!
 
 donate-message = 
     <tg-emoji emoji-id="5258318251355545562">👍</tg-emoji> <b>Liked the bot?</b>

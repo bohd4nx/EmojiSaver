@@ -1,4 +1,4 @@
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 
 from aiogram.types import Message
 from aiogram_i18n import I18nContext
@@ -11,7 +11,5 @@ async def status_message(message: Message, i18n: I18nContext, processing_type: s
     try:
         yield status_msg
     finally:
-        try:
+        with suppress(Exception):
             await status_msg.delete()
-        except Exception:
-            pass

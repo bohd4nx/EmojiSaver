@@ -1,9 +1,11 @@
 from collections.abc import Awaitable, Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
-from aiogram_i18n import I18nContext
+
+if TYPE_CHECKING:
+    from aiogram_i18n import I18nContext
 
 
 class LocaleMiddleware(BaseMiddleware):

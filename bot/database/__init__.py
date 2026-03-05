@@ -1,4 +1,4 @@
-from .base import init_db, close_db, SessionLocal
-from .models import User, Download
+from .base import SessionLocal, close_db, init_db
+from .models import Download, User
 
-__all__ = ["User", "Download", "init_db", "close_db", "SessionLocal"]
+__all__ = ["Download", "SessionLocal", "User", "close_db", "init_db"]
