@@ -5,9 +5,8 @@ from aiogram.exceptions import TelegramBadRequest
 import filetype
 
 from bot.core import logger
+from bot.core.constants import NON_CONVERTIBLE_FORMATS
 from bot.services import tgs_to_json, tgs_to_lottie, tgs_to_png
-
-NON_CONVERTIBLE = {"webm", "webp", "mp4", "gif", "png", "jpg", "jpeg", "mkv"}
 
 
 def detect_format(data: bytes, fallback_path: str = "") -> str:
@@ -26,8 +25,10 @@ def detect_format(data: bytes, fallback_path: str = "") -> str:
     return "dat"
 
 
-async def _convert(file_id: str, ext: str, data: bytes) -> tuple[dict[str, bytes], bool]:
-    if ext in NON_CONVERTIBLE:
+async def _convert(
+    file_id: str, ext: str, data: bytes
+) -> tuple[dict[str, bytes], bool]:
+    if ext in NON_CONVERTIBLE_FORMATS:
         return {f"{file_id}.{ext}": data}, True
 
     json_data = await tgs_to_json(data)
@@ -54,23 +55,23 @@ async def download_and_convert(file_id: str, bot: Bot) -> tuple[dict[str, bytes]
         file_data = await bot.download_file(file_info.file_path)
 
         if not file_data:
-            logger.warning(f"Failed to download file: {file_id}")
+            logger.warning("Failed to download file: %s", file_id)
             return {}, False
 
         data = file_data.read()
 
         # Detect format: magic bytes → Telegram path → 'dat' fallback
         ext = detect_format(data, file_info.file_path)
-        logger.debug(f"Downloaded {file_id}: {len(data)} bytes, format={ext}")
+        logger.debug("Downloaded %s: %s bytes, format=%s", file_id, len(data), ext)
 
         return await _convert(file_id, ext, data)
 
-    except TelegramBadRequest as e:
-        if "wrong file_id" in str(e) or "temporarily unavailable" in str(e):
-            logger.warning(f"File unavailable: {file_id}")
+    except TelegramBadRequest as exc:
+        if "wrong file_id" in str(exc) or "temporarily unavailable" in str(exc):
+            logger.warning("File unavailable: %s", file_id)
         else:
-            logger.error(f"Telegram error for {file_id}: {e}")
+            logger.error("Telegram error for %s: %s", file_id, exc)
         return {}, False
-    except Exception as e:
-        logger.exception(f"Failed to process {file_id}: {e}")
+    except Exception:
+        logger.exception("Failed to process %s", file_id)
         return {}, False

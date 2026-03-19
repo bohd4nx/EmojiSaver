@@ -1,3 +1,3 @@
-from . import emoji, fallback, packs, stickers
+from . import emoji, errors, packs, stickers
 
-__all__ = ["emoji", "fallback", "packs", "stickers"]
+__all__ = ["emoji", "errors", "packs", "stickers"]

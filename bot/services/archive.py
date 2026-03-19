@@ -6,7 +6,7 @@ from aiogram.enums import ChatAction
 from aiogram.types import BufferedInputFile, Message
 from aiogram_i18n import I18nContext
 
-MAX_ARCHIVE_SIZE = 45 * 1024 * 1024  # 45 MB
+from bot.core.constants import MAX_ARCHIVE_SIZE
 
 
 async def pack_zip(files: dict[str, bytes]) -> list[bytes]:
@@ -41,7 +41,9 @@ async def send_result(
     filename: str | None = None,
 ) -> None:
     bot_info = await message.bot.me()
-    base_name = f"{filename} by @{bot_info.username}" if filename else f"@{bot_info.username}"
+    base_name = (
+        f"{filename} by @{bot_info.username}" if filename else f"@{bot_info.username}"
+    )
     caption = i18n.get("format-warning") if has_unsupported else None
     total = len(archives)
 

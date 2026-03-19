@@ -9,9 +9,15 @@ from aiogram_i18n.cores.fluent_compile_core import FluentCompileCore
 
 from bot.commands import help_router, start_router
 from bot.core import config, logger, setup_logging
+from bot.core.constants import DEFAULT_LOCALE
 from bot.database import close_db, init_db
-from bot.handlers import emoji, fallback, packs, stickers
-from bot.middlewares import LocaleMiddleware, RateLimitMiddleware
+from bot.handlers import emoji, errors, packs, stickers
+from bot.handlers.errors import setup_error_handlers
+from bot.middlewares import (
+    DatabaseMiddleware,
+    LocaleMiddleware,
+    RateLimitMiddleware,
+)
 
 
 async def main() -> None:
@@ -35,7 +41,6 @@ async def main() -> None:
 
     i18n_core = FluentCompileCore(path="locales/{locale}")
     await i18n_core.startup()
-    logger.info(f"Loaded locales: {i18n_core.available_locales}")
 
     dp = Dispatcher()
     dp.include_routers(
@@ -44,15 +49,17 @@ async def main() -> None:
         packs.router,
         emoji.router,
         stickers.router,
-        fallback.router,
+        errors.router,
     )
 
-    i18n = I18nMiddleware(core=i18n_core, default_locale="en")
+    i18n = I18nMiddleware(core=i18n_core, default_locale=DEFAULT_LOCALE)
     i18n.setup(dispatcher=dp)
 
+    dp.update.middleware(DatabaseMiddleware())
     dp.update.middleware(LocaleMiddleware())
-    dp.message.middleware(RateLimitMiddleware())
-    dp.callback_query.middleware(RateLimitMiddleware())
+    dp.update.middleware(RateLimitMiddleware())
+
+    setup_error_handlers(dp)
 
     try:
         await dp.start_polling(
@@ -72,5 +79,5 @@ if __name__ == "__main__":
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
         pass
-    except Exception as e:
-        logger.exception(f"Unexpected error: {e}")
+    except Exception as exc:
+        logger.exception("Unexpected error: %s", exc)

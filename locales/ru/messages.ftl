@@ -49,7 +49,7 @@ processing-error =
     
     <code>{$error}</code>
     
-    Пожалуйста, попробуйте снова или обратитесь к <tg-emoji emoji-id="5258073068852485953">✈️</tg-emoji> <a href="{$developer}">разработчику</a>
+    Пожалуйста, попробуйте позже.
 
 processing = <tg-emoji emoji-id="5258514780469075716">📂</tg-emoji> <b>Обрабатываю ваш запрос...</b>
 
@@ -58,7 +58,7 @@ processing-pack = <tg-emoji emoji-id="5258514780469075716">📂</tg-emoji> <b>О
 processing-failed = 
     <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> <b>Обработка не удалась</b>
     
-    Попробуй позже или обратитесь к <tg-emoji emoji-id="5258073068852485953">✈️</tg-emoji> <a href="{$developer}">разработчику</a>
+    Попробуйте позже.
 
 pack-not-found = 
     <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> <b>Пак не найден</b>

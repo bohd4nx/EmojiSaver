@@ -3,8 +3,15 @@
 
   <h1 style="margin-top: 24px;">Telegram Emoji Saver Bot</h1>
 
-  <p style="font-size: 18px; color: #666; margin-bottom: 24px;">
-    <strong>Extract and convert Telegram animated emoji & stickers to editable formats</strong>
+  <p style="font-size: 18px; margin-bottom: 24px;">
+    <strong>Extract and convert Telegram custom emoji and stickers to TGS, JSON, Lottie, and PNG formats</strong>
+  </p>
+
+  <p>
+    <a href="https://python.org"><img alt="Python" src="https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white"></a>
+    <a href="https://github.com/aiogram/aiogram"><img alt="aiogram" src="https://img.shields.io/badge/aiogram-3.26.0-2CA5E0?style=flat&logo=telegram&logoColor=white"></a>
+    <a href="https://github.com/bohd4nx/EmojiSaver/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/bohd4nx/EmojiSaver?style=flat&color=yellow"></a>
+    <a href="https://github.com/bohd4nx/EmojiSaver/issues"><img alt="Issues" src="https://img.shields.io/github/issues/bohd4nx/EmojiSaver?style=flat&color=red"></a>
   </p>
 
   <p>
@@ -12,20 +19,24 @@
     ·
     <a href="https://github.com/bohd4nx/EmojiSaver/issues">Request Feature</a>
     ·
-    <a href="https://t.me/EmojiSaverBot">Demo Bot</a>
+    <a href="https://t.me/EmojiSaverBot"><strong>Demo Bot</strong></a>
+    ·
+    <a href="https://t.me/send?start=IV33ltNgzUFL"><strong>Donate</strong></a>
   </p>
 
 </div>
 
+---
+
 ## Features
 
-- **Download Stickers** - Download and convert any Telegram sticker
-- **Extract Premium Emoji** - Extract custom emoji from messages
-- **Full Pack Download** - Download entire sticker/emoji packs from t.me links
-- **Smart Format Detection** - Auto-detect file format (TGS, WebM, WebP, etc.)
-- **Multi-Part Archives** - Auto-split large packs into 45 MB parts
-- **Batch Processing** - Handle multiple items with progress tracking
-- **Multi-Language** - English and Russian support
+- Download and convert Telegram stickers
+- Extract custom (premium) emoji from messages
+- Download full sticker and emoji packs from t.me links
+- Auto-detect file format (TGS, WebM, WebP, MP4, GIF, etc.)
+- Auto-split large archives into 45 MB parts
+- Progress updates during pack processing
+- Multi-language support (English and Russian)
 
 ## Quick Start
 
@@ -102,13 +113,15 @@ python main.py
 - **Type**: Any Telegram sticker or custom emoji
 - **Supported Formats**: 
   - TGS (Lottie-based animations) - **converted** to JSON, Lottie, PNG
-  - WebM, WebP, MP4, GIF - **saved as original** without conversion
+  - WebM, WebP, MP4, GIF, PNG, JPG, JPEG, MKV - **saved as original** without conversion
 
-2. **Download** - Retrieve TGS files from Telegram servers
-3. **Decompression** - Extract Lottie JSON from gzipped TGS
-4. **Conversion** - Create JSON, Lottie, APNG, and PNG formats
-5. **Packaging** - Compress files into ZIP archives (max 45 MB per part)
-6. **Delivery** - Send back to user with multi-part support if needed
+### Processing Pipeline
+
+1. **Download** - Retrieve sticker/emoji files from Telegram servers
+2. **Format Detection** - Detect file type by magic bytes and file extension fallback
+3. **Conversion (TGS only)** - Generate JSON, Lottie, and PNG formats
+4. **Packaging** - Compress files into ZIP archives (max 45 MB per part)
+5. **Delivery** - Send back to user with multi-part support when needed
 
 ---
 

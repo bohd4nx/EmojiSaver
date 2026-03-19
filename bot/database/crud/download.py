@@ -5,15 +5,13 @@ from bot.database.models import Download
 
 
 async def add_download(
-        session: AsyncSession,
-        user_id: int,
-        content_type: str,
-        content_id: str | None = None
+    session: AsyncSession,
+    user_id: int,
+    content_type: str,
+    content_id: str | None = None,
 ) -> Download:
     download = Download(
-        user_id=user_id,
-        content_type=content_type,
-        content_id=content_id
+        user_id=user_id, content_type=content_type, content_id=content_id
     )
     session.add(download)
     await session.commit()
@@ -21,17 +19,21 @@ async def add_download(
     return download
 
 
-async def get_download_by_id(session: AsyncSession, download_id: int) -> Download | None:
+async def get_download_by_id(
+    session: AsyncSession, download_id: int
+) -> Download | None:
     result = await session.execute(select(Download).where(Download.id == download_id))
     return result.scalar_one_or_none()
 
 
 async def get_user_downloads(
-        session: AsyncSession,
-        user_id: int,
-        limit: int | None = None
+    session: AsyncSession, user_id: int, limit: int | None = None
 ) -> list[Download]:
-    query = select(Download).where(Download.user_id == user_id).order_by(Download.created_at.desc())
+    query = (
+        select(Download)
+        .where(Download.user_id == user_id)
+        .order_by(Download.created_at.desc())
+    )
     if limit:
         query = query.limit(limit)
     result = await session.execute(query)

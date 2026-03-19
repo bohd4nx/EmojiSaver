@@ -1,4 +1,5 @@
 from collections.abc import Awaitable, Callable
+import math
 import time
 from typing import TYPE_CHECKING, Any
 
@@ -13,7 +14,6 @@ if TYPE_CHECKING:
 
 class RateLimitMiddleware(BaseMiddleware):
     def __init__(self) -> None:
-        super().__init__()
         self._users: dict[int, float] = {}
 
     async def __call__(
@@ -30,9 +30,13 @@ class RateLimitMiddleware(BaseMiddleware):
         elapsed = now - self._users.get(user.id, 0.0)
 
         if elapsed < config.RATE_LIMIT_COOLDOWN:
-            wait = int(config.RATE_LIMIT_COOLDOWN - elapsed) + 1
-            i18n: I18nContext = data["i18n"]
-            text = i18n.get("rate-limit-alert", seconds=wait)
+            wait = max(1, math.ceil(config.RATE_LIMIT_COOLDOWN - elapsed))
+            i18n: I18nContext | None = data.get("i18n")
+            text = (
+                i18n.get("rate-limit-alert", seconds=wait)
+                if i18n
+                else f"Please wait {wait} seconds."
+            )
 
             if isinstance(event, CallbackQuery):
                 await event.answer(text, show_alert=True)

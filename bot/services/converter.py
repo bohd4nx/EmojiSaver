@@ -5,28 +5,15 @@ import zipfile
 
 from rlottie_python import LottieAnimation
 
-from bot.__meta__ import DESCRIPTION, DEVELOPER_URL, GITHUB_URL, TELEGRAM_URL, TITLE, VERSION
 from bot.core import logger
-
-
-def _lottie_manifest() -> dict:
-    return {
-        "version": VERSION,
-        "generator": TITLE,
-        "author": DEVELOPER_URL,
-        "description": DESCRIPTION,
-        "generator_url": GITHUB_URL,
-        "created": f"via {TELEGRAM_URL}",
-        "revision": 1,
-        "animations": [{"id": "animation", "direction": 1, "speed": 1, "layers": []}],
-    }
+from bot.core.constants import LOTTIE_MANIFEST
 
 
 async def tgs_to_json(tgs_data: bytes) -> bytes | None:
     try:
         return gzip.decompress(tgs_data)
-    except Exception as e:
-        logger.error(f"TGS to JSON failed: {e}")
+    except Exception as exc:
+        logger.error("TGS to JSON failed: %s", exc)
         return None
 
 
@@ -35,15 +22,17 @@ async def tgs_to_lottie(tgs_data: bytes) -> bytes | None:
         json_data = gzip.decompress(tgs_data)
         buffer = io.BytesIO()
         with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zf:
-            zf.writestr("manifest.json", json.dumps(_lottie_manifest()))
+            zf.writestr("manifest.json", json.dumps(LOTTIE_MANIFEST))
             zf.writestr("animations/animation.json", json_data)
         return buffer.getvalue()
-    except Exception as e:
-        logger.error(f"TGS to Lottie failed: {e}")
+    except Exception as exc:
+        logger.error("TGS to Lottie failed: %s", exc)
         return None
 
 
-async def tgs_to_png(tgs_data: bytes, width: int = 512, height: int = 512) -> bytes | None:
+async def tgs_to_png(
+    tgs_data: bytes, width: int = 512, height: int = 512
+) -> bytes | None:
     try:
         json_str = gzip.decompress(tgs_data).decode("utf-8")
         anim = LottieAnimation.from_data(json_str)
@@ -51,6 +40,6 @@ async def tgs_to_png(tgs_data: bytes, width: int = 512, height: int = 512) -> by
         buffer = io.BytesIO()
         img.save(buffer, format="PNG")
         return buffer.getvalue()
-    except Exception as e:
-        logger.error(f"TGS to PNG failed: {e}")
+    except Exception as exc:
+        logger.error("TGS to PNG failed: %s", exc)
         return None
