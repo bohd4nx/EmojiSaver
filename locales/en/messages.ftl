@@ -73,11 +73,16 @@ no-custom-emoji =
 rate-limit-alert = <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> Please wait {$seconds} seconds before sending next request!
 
 donate-message = 
-    <tg-emoji emoji-id="5258318251355545562">👍</tg-emoji> <b>Liked the bot?</b>
+    <tg-emoji emoji-id="5258093637450866522">👍</tg-emoji> <b>Liked the bot?</b>
     
-    Support the project and help keep it running!
-    Your donation helps maintain and improve the bot.
+    There are several ways to help us grow:
     
-    <tg-emoji emoji-id="5258204546391351475">💰</tg-emoji> <a href="https://t.me/send?start=IV33ltNgzUFL">Donate via CryptoBot</a>
+    <tg-emoji emoji-id="5258165702707125574">💰</tg-emoji> <b>Support with a donation:</b>
+    <a href="https://t.me/send?start=IV33ltNgzUFL">Donate via CryptoBot</a>
     
-    <tg-emoji emoji-id="5260268501515377807">📣</tg-emoji> <b>If you want, you can follow <a href="https://t.me/id2757542991">my channel</a> for updates and other interesting projects.</b>
+    <tg-emoji emoji-id="5260268501515377807">📢</tg-emoji> <b>Want to advertise?</b>
+    Got an amazing project or service? We can help you reach our audience!
+    <a href="https://t.me/bohd4nx">Contact the owner</a> to discuss partnership details.
+    
+    <tg-emoji emoji-id="5258073068852485953">📣</tg-emoji> <b>Follow our updates:</b>
+    <a href="https://t.me/id2757542991">Subscribe to the channel</a> for news and more interesting projects!

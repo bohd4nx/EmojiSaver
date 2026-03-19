@@ -26,4 +26,4 @@ def setup_error_handlers(dp: Dispatcher) -> None:
                 event.exception.__traceback__,
             ),
         )
-        await message.reply(i18n.get("processing-error", error=str(event.exception)))
+        await message.reply(i18n.get("processing-failed"))

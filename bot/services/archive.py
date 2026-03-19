@@ -55,6 +55,6 @@ async def send_result(
             caption=caption,
         )
 
-    # Show donate message with ~5% probability (approximately every 20 downloads)
-    if random.random() < 0.05:
+    # Show donate message with ~25% probability (approximately every 4 downloads)
+    if random.random() < 0.25:
         await message.answer(i18n.get("donate-message"))

@@ -4,7 +4,7 @@ import time
 from typing import TYPE_CHECKING, Any
 
 from aiogram import BaseMiddleware
-from aiogram.types import CallbackQuery, TelegramObject
+from aiogram.types import CallbackQuery, Message, TelegramObject, Update
 
 from bot.core import config
 
@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class RateLimitMiddleware(BaseMiddleware):
     def __init__(self) -> None:
+        super().__init__()
         self._users: dict[int, float] = {}
 
     async def __call__(
@@ -32,16 +33,22 @@ class RateLimitMiddleware(BaseMiddleware):
         if elapsed < config.RATE_LIMIT_COOLDOWN:
             wait = max(1, math.ceil(config.RATE_LIMIT_COOLDOWN - elapsed))
             i18n: I18nContext | None = data.get("i18n")
-            text = (
-                i18n.get("rate-limit-alert", seconds=wait)
-                if i18n
-                else f"Please wait {wait} seconds."
-            )
+            if not i18n:
+                return None
 
-            if isinstance(event, CallbackQuery):
+            text = i18n.get("rate-limit-alert", seconds=wait)
+
+            # Extract actual message/callback from Update object
+            if isinstance(event, Update):
+                if event.callback_query:
+                    await event.callback_query.answer(text, show_alert=True)
+                elif event.message:
+                    await event.message.reply(text)
+            elif isinstance(event, CallbackQuery):
                 await event.answer(text, show_alert=True)
-            else:
-                await event.answer(text)
+            elif isinstance(event, Message):
+                await event.reply(text)
+
             return None
 
         self._users[user.id] = now
