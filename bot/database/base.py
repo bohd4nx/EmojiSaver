@@ -18,9 +18,6 @@ class Base(DeclarativeBase):
     pass
 
 
-# Per-connection PRAGMAs: applied to every new connection from the pool.
-# WAL is persisted at DB file level, but busy_timeout / synchronous / foreign_keys
-# are connection-scoped and must be set here, not just once in init_db().
 @event.listens_for(engine.sync_engine, "connect")
 def _set_sqlite_pragma(dbapi_conn: Any, _connection_record: Any) -> None:
     cursor = dbapi_conn.cursor()

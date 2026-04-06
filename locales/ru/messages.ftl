@@ -1,7 +1,7 @@
 start-message = 
-    <tg-emoji emoji-id="5258011929993026890">👋</tg-emoji> <b>Привет, {$name}!</b>
+    <tg-emoji emoji-id="5258011929993026890">👋</tg-emoji> <b>Здравствуйте, {$name}!</b>
     
-    Скачивай и конвертируй стикеры и эмодзи Telegram в форматы <code>TGS</code>, <code>JSON</code>, <code>Lottie</code> и <code>PNG</code>.
+    Скачивайте и конвертируйте стикеры и эмодзи Telegram в форматы <code>TGS</code>, <code>JSON</code>, <code>Lottie</code> и <code>PNG</code>.
     
     <tg-emoji emoji-id="5260687681733533075">🔄</tg-emoji> <b>Что я умею:</b> [/help]
     • Извлекать кастомные (премиум) эмодзи из сообщений
@@ -10,25 +10,25 @@ start-message =
     
     <tg-emoji emoji-id="5258330865674494479">📊</tg-emoji> <b>Всего скачиваний:</b> {$downloads}
     
-    <tg-emoji emoji-id="5258503720928288433">🔎</tg-emoji> <b>Быстрый старт:</b> Отправь мне эмодзи, стикер или вставь ссылку на пак!
+    <tg-emoji emoji-id="5258503720928288433">🔎</tg-emoji> <b>Быстрый старт:</b> Отправьте эмодзи, стикер или вставьте ссылку на пак!
 
 help-message = 
     <tg-emoji emoji-id="5258503720928288433">ℹ️</tg-emoji> <b>Как использовать:</b>
     
     <tg-emoji emoji-id="5408894951440279259">1️⃣</tg-emoji> <b>Пользовательские эмодзи:</b>
-    • Отправь любое сообщение с кастомными (премиум) эмодзи
+    • Отправьте любое сообщение с кастомными (премиум) эмодзи
     • Все эмодзи будут извлечены и конвертированы автоматически
     
     <tg-emoji emoji-id="5411585799990830248">2️⃣</tg-emoji> <b>Стикеры:</b>
-    • Отправь или перешли любой стикер
+    • Отправьте или перешлите любой стикер
     • Конвертируется в редактируемые форматы (JSON, Lottie, PNG)
     
     <tg-emoji emoji-id="5409189019261103031">3️⃣</tg-emoji> <b>Целые паки:</b>
-    • Вставь ссылку на пак: <code>https://t.me/addstickers/PackName</code>
+    • Вставьте ссылку на пак: <code>https://t.me/addstickers/PackName</code>
     • Или эмодзи пак: <code>https://t.me/addemoji/PackName</code>
     • Весь пак будет скачан и конвертирован
     
-    <tg-emoji emoji-id="5258216851472654189">💡</tg-emoji> <b>Подсказка:</b> Для обычных статических эмодзи используй:
+    <tg-emoji emoji-id="5258216851472654189">💡</tg-emoji> <b>Подсказка:</b> Для обычных статических эмодзи используйте:
     <code>https://t.me/addemoji/StaticEmoji</code>
     <code>https://t.me/addstickers/StaticEmoji</code>
     
@@ -63,12 +63,12 @@ processing-failed =
 pack-not-found = 
     <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> <b>Пак не найден</b>
     
-    Проверь ссылку и попробуй снова.
+    Проверьте ссылку и попробуйте снова.
 
 no-custom-emoji = 
     <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> <b>Кастомные (премиум) эмодзи не найдены</b>
     
-    Отправь сообщение с кастомными эмодзи.
+    Отправьте сообщение с кастомными эмодзи.
 
 rate-limit-alert = <tg-emoji emoji-id="5258474669769497337">❌</tg-emoji> Пожалуйста, подождите {$seconds} секунд перед отправкой следующего запроса!
 

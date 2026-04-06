@@ -32,12 +32,38 @@ async def main() -> None:
         ),
     )
 
-    await bot.set_my_commands(
-        [
-            BotCommand(command="start", description="🚀 Start the bot"),
-            BotCommand(command="help", description="❓ Show help information"),
-        ]
-    )
+    _commands = {
+        "ru": [
+            BotCommand(command="start", description="🏠 Главное меню"),
+            BotCommand(command="help", description="❓ Помощь"),
+        ],
+        "en": [
+            BotCommand(command="start", description="🏠 Main menu"),
+            BotCommand(command="help", description="❓ Help"),
+        ],
+    }
+    for lang, cmds in _commands.items():
+        await bot.set_my_commands(cmds, language_code=lang)
+
+    _descriptions = {
+        "ru": (
+            "Скачивайте и конвертируйте стикеры и анимированные эмодзи Telegram в форматы TGS, JSON, Lottie и PNG.\n\n"
+            "Извлекайте кастомные эмодзи, конвертируйте стикеры и скачивайте целые паки."
+        ),
+        "en": (
+            "Download and convert Telegram animated emoji & stickers to TGS, JSON, Lottie, and PNG formats.\n\n"
+            "Extract custom emoji, convert stickers, and download entire packs."
+        ),
+    }
+    for lang, desc in _descriptions.items():
+        await bot.set_my_description(desc, language_code=lang)
+
+    _short_descriptions = {
+        "ru": "🔄 Конвертируйте и скачивайте анимированные эмодзи и стикеры Telegram",
+        "en": "🔄  Download and convert Telegram animated emoji & stickers to editable formats",
+    }
+    for lang, short_desc in _short_descriptions.items():
+        await bot.set_my_short_description(short_desc, language_code=lang)
 
     i18n_core = FluentCompileCore(path="locales/{locale}")
     await i18n_core.startup()
