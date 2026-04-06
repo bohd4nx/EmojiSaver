@@ -2,7 +2,7 @@ from pathlib import Path
 
 from aiogram import Bot
 from aiogram.exceptions import TelegramBadRequest
-import filetype
+import filetype  # type: ignore[import-untyped]
 
 from bot.core import logger
 from bot.core.constants import NON_CONVERTIBLE_FORMATS
@@ -52,7 +52,8 @@ async def _convert(
 async def download_and_convert(file_id: str, bot: Bot) -> tuple[dict[str, bytes], bool]:
     try:
         file_info = await bot.get_file(file_id)
-        file_data = await bot.download_file(file_info.file_path)
+        file_path = file_info.file_path or ""
+        file_data = await bot.download_file(file_path)
 
         if not file_data:
             logger.warning("Failed to download file: %s", file_id)
@@ -61,7 +62,7 @@ async def download_and_convert(file_id: str, bot: Bot) -> tuple[dict[str, bytes]
         data = file_data.read()
 
         # Detect format: magic bytes → Telegram path → 'dat' fallback
-        ext = detect_format(data, file_info.file_path)
+        ext = detect_format(data, file_path)
         logger.debug("Downloaded %s: %s bytes, format=%s", file_id, len(data), ext)
 
         return await _convert(file_id, ext, data)

@@ -1,3 +1,8 @@
+from pathlib import Path
+
+# Absolute path to the project root directory.
+BASE_DIR = Path(__file__).resolve().parents[2]
+
 # Fallback language when the user has no locale or it is not supported.
 DEFAULT_LOCALE = "en"
 
@@ -5,10 +10,10 @@ DEFAULT_LOCALE = "en"
 SUPPORTED_LOCALES = frozenset({"en", "ru"})
 
 # Log file name to centralize logging configuration.
-LOG_FILE_NAME = "Bot.log"
+LOG_FILE_NAME = BASE_DIR / "Bot.log"
 
-# Database file name to keep storage configuration consistent.
-DATABASE_FILE_NAME = "EmojiSaverBot.db"
+# Database file path to keep storage configuration consistent.
+DATABASE_FILE = BASE_DIR / "EmojiSaverBot.db"
 
 # Maximum allowed archive size to prevent oversized uploads.
 MAX_ARCHIVE_SIZE = 45 * 1024 * 1024  # 45 MB

@@ -1,15 +1,12 @@
-from pathlib import Path
 from typing import Any
 
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
-from bot.core.constants import DATABASE_FILE_NAME
+from bot.core.constants import DATABASE_FILE
 
-DB_FILE = Path(__file__).parents[2] / DATABASE_FILE_NAME
-
-engine = create_async_engine(f"sqlite+aiosqlite:///{DB_FILE}", echo=False)
+engine = create_async_engine(f"sqlite+aiosqlite:///{DATABASE_FILE}", echo=False)
 
 SessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
