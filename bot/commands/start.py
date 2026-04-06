@@ -1,11 +1,11 @@
 from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
+from aiogram.utils.markdown import html_decoration
 from aiogram_i18n import I18nContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.crud import get_total_downloads
-from bot.utils import escape_html
 
 router = Router(name=__name__)
 
@@ -19,7 +19,7 @@ async def start_command(
     await message.answer(
         i18n.get(
             "start-message",
-            name=escape_html(message.from_user.first_name),
+            name=html_decoration.quote(message.from_user.first_name or "User"),
             downloads=total_downloads,
         )
     )

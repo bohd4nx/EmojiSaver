@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot.core import logger
 from bot.database.crud import add_download, get_or_create_user
 from bot.services import download_and_convert, pack_zip, send_result
-from bot.utils import status_message
+from bot.handlers.status import status_message
 
 router = Router(name=__name__)
 
