@@ -1,28 +1,19 @@
 <div align="center">
-  <img src="icon.svg" alt="Emoji Saver Bot Logo" width="120" height="120" style="border-radius: 24px;">
 
-  <h1 style="margin-top: 24px;">Telegram Emoji Saver Bot</h1>
+  <img src="https://www.bohd4n.dev/assets/projects/StickersDownloader.svg" alt="EmojiSaver" width="120" height="120">
 
-  <p style="font-size: 18px; margin-bottom: 24px;">
-    <strong>Extract and convert Telegram custom emoji and stickers to TGS, JSON, Lottie, and PNG formats</strong>
-  </p>
+  <h1>Telegram Emoji Saver Bot</h1>
 
   <p>
-    <a href="https://python.org"><img alt="Python" src="https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white"></a>
-    <a href="https://github.com/aiogram/aiogram"><img alt="aiogram" src="https://img.shields.io/badge/aiogram-3.26.0-2CA5E0?style=flat&logo=telegram&logoColor=white"></a>
-    <a href="https://github.com/bohd4nx/EmojiSaver/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/bohd4nx/EmojiSaver?style=flat&color=yellow"></a>
-    <a href="https://github.com/bohd4nx/EmojiSaver/issues"><img alt="Issues" src="https://img.shields.io/github/issues/bohd4nx/EmojiSaver?style=flat&color=red"></a>
+    <b>Telegram bot that downloads and converts custom emoji and stickers to TGS, JSON, Lottie, and PNG formats.</b>
   </p>
 
-  <p>
-    <a href="https://github.com/bohd4nx/EmojiSaver/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/bohd4nx/EmojiSaver/issues">Request Feature</a>
-    ·
-    <a href="https://t.me/EmojiSaverBot"><strong>Demo Bot</strong></a>
-    ·
-    <a href="https://t.me/send?start=IV33ltNgzUFL"><strong>Donate</strong></a>
-  </p>
+[![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
+[![Demo Bot](https://img.shields.io/badge/Demo-@EmojiSaverBot-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/EmojiSaverBot)
+[![Donate TON](https://img.shields.io/badge/Donate-TON-0098EA?style=flat&logo=ton&logoColor=white)](https://app.tonkeeper.com/transfer/UQCppfw5DxWgdVHf3zkmZS8k1mt9oAUYxQLwq2fz3nhO8No5)
+[![Stars](https://img.shields.io/github/stars/bohd4nx/EmojiSaver?style=flat&color=yellow)](https://github.com/bohd4nx/EmojiSaver/stargazers)
+
+[Report Bug](https://github.com/bohd4nx/EmojiSaver/issues) · [Request Feature](https://github.com/bohd4nx/EmojiSaver/issues)
 
 </div>
 
@@ -30,105 +21,95 @@
 
 ## Features
 
-- Download and convert Telegram stickers
 - Extract custom (premium) emoji from messages
-- Download full sticker and emoji packs from t.me links
-- Auto-detect file format (TGS, WebM, WebP, MP4, GIF, etc.)
+- Convert stickers to TGS, JSON, Lottie, and PNG formats
+- Download full sticker and emoji packs via `t.me` links
+- Auto-detect file format by magic bytes with extension fallback
 - Auto-split large archives into 45 MB parts
 - Progress updates during pack processing
 - Multi-language support (English and Russian)
 
-## Quick Start
+---
 
-### 1. Installation
+## Installation
 
 ```bash
 git clone https://github.com/bohd4nx/EmojiSaver.git
 cd EmojiSaver
 pip install -r requirements.txt
+cp .env.example .env
 ```
 
-### 2. Configuration
-
-Create `.env` file in project root:
-
-```env
-# Your bot token, get it from @BotFather
-BOT_TOKEN=1234567890:your_bot_token_from_@botfather
-
-# Rate limit cooldown in seconds (default: 5)
-RATE_LIMIT_COOLDOWN=5
-```
-
-### 3. Run
+Edit `.env` with your credentials (see [Configuration](#configuration) below), then run:
 
 ```bash
 python main.py
 ```
 
+---
+
+## Configuration
+
+| Variable              | Description                                         |
+| --------------------- | --------------------------------------------------- |
+| `BOT_TOKEN`           | Bot token from [@BotFather](https://t.me/BotFather) |
+| `RATE_LIMIT_COOLDOWN` | Cooldown between requests in seconds (default: `5`) |
+
+---
+
 ## Usage
 
-### Bot Commands
+Send any of the following to the bot:
 
-- `/start` - Welcome message and instructions
-- `/help` - Detailed usage guide
-
-### Custom Emoji Extraction
-
-1. **Forward or send** message with an animated custom emoji
-2. **Wait** for processing
-3. **Download** ZIP archive with all formats
-4. **Edit** in your favorite animation software
-
-### Sticker Conversion
-
-1. **Forward or send** any sticker to bot
-2. **Wait** for processing
-3. **Download** ZIP archive with converted formats (or original file)
-4. **Use** in After Effects, Figma, or LottieFiles
-
-### Pack Download
-
-1. **Send pack URL** (e.g., `https://t.me/addstickers/YourPack` or `https://t.me/addemoji/YourPack`)
-2. **Watch progress** as bot processes each item
-3. **Download** complete archive with all stickers/emoji converted
-4. **Edit** entire pack in your workflow
-
-> **💡 Tip:** For regular static emoji, use the StaticEmoji pack:  
-> `https://t.me/addemoji/StaticEmoji` or `https://t.me/addstickers/StaticEmoji`
-
-## Format Compatibility
+- A **sticker** — returns a ZIP with all converted formats
+- A **message containing custom emoji** — extracts and converts each emoji
+- A **pack link** (`https://t.me/addstickers/...` or `https://t.me/addemoji/...`) — downloads and converts the entire pack
 
 ### Output Formats
 
-| Format     | Extension | Software Compatibility                        | Use Case                             |
-| ---------- | --------- | --------------------------------------------- | ------------------------------------ |
-| **TGS**    | `.tgs`    | Telegram                                      | Upload as custom emoji/stickers      |
-| **JSON**   | `.json`   | Adobe After Effects, Figma, Lottie Web Player | Edit animations, web implementation  |
-| **PNG**    | `.png`    | Photoshop, GIMP, Any image viewer             | Raster preview, 512x512 pixels       |
-| **Lottie** | `.lottie` | LottieFiles, Android/iOS apps                 | Cross-platform animation integration |
+| Format | Extension | Notes                                  |
+| ------ | --------- | -------------------------------------- |
+| TGS    | `.tgs`    | Original Telegram animated format      |
+| JSON   | `.json`   | Uncompressed Lottie animation          |
+| Lottie | `.lottie` | Compressed Lottie (LottieFiles format) |
+| PNG    | `.png`    | First frame, 512×512 px                |
 
-### Input Requirements
+Non-TGS formats (WebM, WebP, MP4, GIF, etc.) are saved as-is without conversion.
 
-- **Type**: Any Telegram sticker or custom emoji
-- **Supported Formats**: 
-  - TGS (Lottie-based animations) - **converted** to JSON, Lottie, PNG
-  - WebM, WebP, MP4, GIF, PNG, JPG, JPEG, MKV - **saved as original** without conversion
+---
 
-### Processing Pipeline
+## Docker
 
-1. **Download** - Retrieve sticker/emoji files from Telegram servers
-2. **Format Detection** - Detect file type by magic bytes and file extension fallback
-3. **Conversion (TGS only)** - Generate JSON, Lottie, and PNG formats
-4. **Packaging** - Compress files into ZIP archives (max 45 MB per part)
-5. **Delivery** - Send back to user with multi-part support when needed
+```bash
+docker build -t emojisaverbot .
+
+# First time — create the database file
+touch /path/on/server/EmojiSaverBot.db
+
+docker run -d --name emojisaverbot \
+  --env-file .env \
+  --restart unless-stopped \
+  -v /path/on/server/EmojiSaverBot.db:/app/EmojiSaverBot.db \
+  emojisaverbot
+```
+
+```bash
+docker logs -f emojisaverbot       # live logs
+docker restart emojisaverbot       # restart
+docker stop emojisaverbot          # stop
+docker rm emojisaverbot            # remove container
+```
+
+---
+
+## License
+
+This project is provided as-is for educational purposes.
 
 ---
 
 <div align="center">
 
-### Made with ❤️ by [@bohd4nx](https://t.me/bohd4nx)
-
-**Star ⭐ this repo if you found it useful!**
+Made with ❤️ by [@bohd4nx](https://t.me/bohd4nx)
 
 </div>
