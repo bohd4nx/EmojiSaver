@@ -19,17 +19,22 @@ router = Router(name=__name__)
 async def handle_emoji(
     message: Message, i18n: I18nContext, session: AsyncSession
 ) -> None:
-    emoji_ids = {
-        e.custom_emoji_id for e in message.entities if e.type == "custom_emoji"
+    entities = message.entities or []
+    emoji_ids: set[str] = {
+        e.custom_emoji_id
+        for e in entities
+        if e.type == "custom_emoji" and e.custom_emoji_id is not None
     }
 
     if not emoji_ids:
         logger.debug(
-            "No custom emoji found in message from user %s", message.from_user.id
+            "No custom emoji found in message from user %s",
+            message.from_user.id if message.from_user else "unknown",
         )
         await message.reply(i18n.get("no-custom-emoji"))
         return
 
+    assert message.bot
     async with status_message(message, i18n) as status_msg:
         files, has_unsupported = await process_all_emojis(emoji_ids, message.bot)
 
@@ -43,8 +48,9 @@ async def handle_emoji(
         await send_result(message, await pack_zip(files), i18n, has_unsupported)
 
     user = message.from_user
-    await get_or_create_user(session, user.id, user.username, user.first_name)
-    await add_download(session, user.id, "emoji", json.dumps(list(emoji_ids)))
+    if user:
+        await get_or_create_user(session, user.id, user.username, user.first_name)
+        await add_download(session, user.id, "emoji", json.dumps(list(emoji_ids)))
 
 
 async def process_all_emojis(

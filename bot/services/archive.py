@@ -40,6 +40,7 @@ async def send_result(
     has_unsupported: bool = False,
     filename: str | None = None,
 ) -> None:
+    assert message.bot
     bot_info = await message.bot.me()
     base_name = (
         f"{filename} by @{bot_info.username}" if filename else f"@{bot_info.username}"

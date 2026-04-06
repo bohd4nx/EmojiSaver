@@ -18,6 +18,7 @@ router = Router(name=__name__)
 async def handle_pack(
     message: Message, i18n: I18nContext, session: AsyncSession
 ) -> None:
+    assert message.text
     pack_name = message.text.strip().rstrip("/").split("/")[-1]
 
     result = await get_pack_items(message, pack_name)
@@ -34,6 +35,7 @@ async def handle_pack(
     async with status_message(
         message, i18n, "processing-pack", current=0, total=len(items)
     ) as status_msg:
+        assert message.bot
         files, has_unsupported = await process_items(
             items, message.bot, status_msg, i18n
         )
@@ -48,14 +50,16 @@ async def handle_pack(
         )
 
     user = message.from_user
-    await get_or_create_user(session, user.id, user.username, user.first_name)
-    await add_download(session, user.id, "pack", pack_name)
+    if user:
+        await get_or_create_user(session, user.id, user.username, user.first_name)
+        await add_download(session, user.id, "pack", pack_name)
 
 
 async def get_pack_items(
     message: Message, pack_name: str
 ) -> tuple[list[Sticker], str] | None:
     try:
+        assert message.bot
         sticker_set = await message.bot.get_sticker_set(pack_name)
         return sticker_set.stickers, sticker_set.title
     except TelegramBadRequest as exc:

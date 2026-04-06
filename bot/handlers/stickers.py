@@ -18,6 +18,7 @@ async def handle_sticker(
     if not message.sticker:
         return
 
+    assert message.bot
     async with status_message(message, i18n) as status_msg:
         files, is_unsupported = await download_and_convert(
             message.sticker.file_id, message.bot
@@ -33,5 +34,6 @@ async def handle_sticker(
         await send_result(message, await pack_zip(files), i18n, is_unsupported)
 
     user = message.from_user
-    await get_or_create_user(session, user.id, user.username, user.first_name)
-    await add_download(session, user.id, "sticker", message.sticker.file_id)
+    if user:
+        await get_or_create_user(session, user.id, user.username, user.first_name)
+        await add_download(session, user.id, "sticker", message.sticker.file_id)
