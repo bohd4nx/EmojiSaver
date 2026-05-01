@@ -1,0 +1,39 @@
+[project]
+name = "emojisaver-bot"
+version = "2026.1.0"
+description = "Telegram bot for downloading and converting emoji and stickers"
+requires-python = ">=3.12"
+authors = [{ name = "bohd4nx" }]
+dependencies = [
+    "aiogram>=3.25.0",
+    "aiogram_i18n>=1.4",
+    "fluent_compiler>=1.1",
+    "python-dotenv>=1.2.2",
+    "sqlalchemy[asyncio]>=2.0.44",
+    "aiosqlite>=0.20.0",
+    "greenlet==3.3.0",
+    "rlottie-python>=1.3.8",
+    "filetype>=1.2.0",
+    "Pillow>=12.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["ruff", "mypy"]
+
+[tool.setuptools.packages.find]
+include = ["bot*"]
+
+[tool.ruff]
+line-length = 128
+target-version = "py312"
+
+[tool.ruff.lint]
+# E — pycodestyle errors, F — pyflakes, W — warnings, I — isort, UP — pyupgrade
+select = ["E", "F", "W", "I", "UP"]
+# E501 — line too long (covered by line-length above)
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+explicit_package_bases = true

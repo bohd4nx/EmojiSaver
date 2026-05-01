@@ -7,24 +7,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.core import logger
 from bot.database.crud import add_download, get_or_create_user
-from bot.services import download_and_convert, pack_zip, send_result
 from bot.handlers.status import status_message
+from bot.services import download_and_convert, pack_zip, send_result
 
 router = Router(name=__name__)
 
 
-@router.message(
-    F.entities.func(lambda entities: any(e.type == "custom_emoji" for e in entities))
-)
-async def handle_emoji(
-    message: Message, i18n: I18nContext, session: AsyncSession
-) -> None:
+# match any message that contains at least one custom emoji entity
+@router.message(F.entities.func(lambda entities: any(e.type == "custom_emoji" for e in entities)))
+async def handle_emoji(message: Message, i18n: I18nContext, session: AsyncSession) -> None:
     entities = message.entities or []
-    emoji_ids: set[str] = {
-        e.custom_emoji_id
-        for e in entities
-        if e.type == "custom_emoji" and e.custom_emoji_id is not None
-    }
+    emoji_ids: set[str] = {e.custom_emoji_id for e in entities if e.type == "custom_emoji" and e.custom_emoji_id is not None}
 
     if not emoji_ids:
         logger.debug(
@@ -39,9 +32,7 @@ async def handle_emoji(
         files, has_unsupported = await process_all_emojis(emoji_ids, message.bot)
 
         if not files:
-            logger.warning(
-                "No files generated from emoji %s", json.dumps(list(emoji_ids))
-            )
+            logger.warning("No files generated from emoji %s", json.dumps(list(emoji_ids)))
             await status_msg.edit_text(i18n.get("processing-failed"))
             return
 
@@ -49,13 +40,11 @@ async def handle_emoji(
 
     user = message.from_user
     if user:
-        await get_or_create_user(session, user.id, user.username, user.first_name)
+        await get_or_create_user(session, user.id, user.username)
         await add_download(session, user.id, "emoji", json.dumps(list(emoji_ids)))
 
 
-async def process_all_emojis(
-    emoji_ids: set[str], bot: Bot
-) -> tuple[dict[str, bytes], bool]:
+async def process_all_emojis(emoji_ids: set[str], bot: Bot) -> tuple[dict[str, bytes], bool]:
     files: dict[str, bytes] = {}
     has_unsupported = False
 

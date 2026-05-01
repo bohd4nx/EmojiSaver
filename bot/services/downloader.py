@@ -1,8 +1,8 @@
 from pathlib import Path
 
+import filetype  # type: ignore[import-untyped]
 from aiogram import Bot
 from aiogram.exceptions import TelegramBadRequest
-import filetype  # type: ignore[import-untyped]
 
 from bot.core import logger
 from bot.core.constants import NON_CONVERTIBLE_FORMATS
@@ -10,24 +10,27 @@ from bot.services import tgs_to_json, tgs_to_lottie, tgs_to_png
 
 
 def detect_format(data: bytes, fallback_path: str = "") -> str:
+    # tgs files are gzip-compressed; detect them by the gzip magic bytes (0x1f 0x8b)
+    # before passing to the generic filetype library which doesn't know TGS.
     if len(data) >= 2 and data[:2] == b"\x1f\x8b":
         return "tgs"
 
+    # try to identify by magic bytes (e.g. WebM, WebP, MP4 …)
     kind = filetype.guess(data)
     if kind is not None:
-        return kind.extension
+        return str(kind.extension)
 
+    # last resort: derive extension from the Telegram file path
     if fallback_path:
         ext = Path(fallback_path).suffix.lstrip(".").lower()
         if ext:
             return ext
 
+    # unknown format — caller will handle it as an opaque blob
     return "dat"
 
 
-async def _convert(
-    file_id: str, ext: str, data: bytes
-) -> tuple[dict[str, bytes], bool]:
+async def _convert(file_id: str, ext: str, data: bytes) -> tuple[dict[str, bytes], bool]:
     if ext in NON_CONVERTIBLE_FORMATS:
         return {f"{file_id}.{ext}": data}, True
 
@@ -61,7 +64,7 @@ async def download_and_convert(file_id: str, bot: Bot) -> tuple[dict[str, bytes]
 
         data = file_data.read()
 
-        # Detect format: magic bytes → Telegram path → 'dat' fallback
+        # detect format: magic bytes → Telegram path → 'dat' fallback
         ext = detect_format(data, file_path)
         logger.debug("Downloaded %s: %s bytes, format=%s", file_id, len(data), ext)
 

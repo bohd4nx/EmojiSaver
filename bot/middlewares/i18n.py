@@ -23,12 +23,8 @@ class LocaleMiddleware(BaseMiddleware):
 
         if i18n and user:
             try:
-                # User may have unsupported language codes, so we normalize to the default locale.
-                locale = (
-                    user.language_code
-                    if user.language_code in SUPPORTED_LOCALES
-                    else DEFAULT_LOCALE
-                )
+                # user may have unsupported language codes, so we normalize to the default locale.
+                locale = user.language_code if user.language_code in SUPPORTED_LOCALES else DEFAULT_LOCALE
                 await i18n.set_locale(locale)
             except Exception as exc:
                 logger.debug("Failed to set locale for user %s: %s", user.id, exc)

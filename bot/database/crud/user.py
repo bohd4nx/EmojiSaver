@@ -14,18 +14,15 @@ async def get_or_create_user(
     session: AsyncSession,
     user_id: int,
     username: str | None = None,
-    full_name: str | None = None,
 ) -> User:
     base_stmt = insert(User).values(
         user_id=user_id,
         username=username,
-        full_name=full_name,
     )
     stmt = base_stmt.on_conflict_do_update(
         index_elements=["user_id"],
         set_={
             "username": base_stmt.excluded.username,
-            "full_name": base_stmt.excluded.full_name,
             "updated_at": func.now(),
         },
     ).returning(User)

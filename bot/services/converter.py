@@ -3,7 +3,7 @@ import io
 import json
 import zipfile
 
-from rlottie_python import LottieAnimation
+from rlottie_python import LottieAnimation  # type: ignore[attr-defined]
 
 from bot.core import logger
 from bot.core.constants import LOTTIE_MANIFEST
@@ -30,9 +30,7 @@ async def tgs_to_lottie(tgs_data: bytes) -> bytes | None:
         return None
 
 
-async def tgs_to_png(
-    tgs_data: bytes, width: int = 512, height: int = 512
-) -> bytes | None:
+async def tgs_to_png(tgs_data: bytes, width: int = 512, height: int = 512) -> bytes | None:
     try:
         json_str = gzip.decompress(tgs_data).decode("utf-8")
         anim = LottieAnimation.from_data(json_str)

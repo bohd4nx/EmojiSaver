@@ -14,9 +14,7 @@ async def handle_invalid_input(message: Message, i18n: I18nContext) -> None:
 
 def setup_error_handlers(dp: Dispatcher) -> None:
     @dp.error(F.update.message.as_("message"))
-    async def handle_message_error(
-        event: ErrorEvent, message: Message, i18n: I18nContext
-    ) -> None:
+    async def handle_message_error(event: ErrorEvent, message: Message, i18n: I18nContext) -> None:
         logger.error(
             "Unhandled message error: %s",
             event.exception,

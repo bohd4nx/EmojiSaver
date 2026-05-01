@@ -17,14 +17,7 @@ class User(Base):
 
     user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     username: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
-    full_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime, default=func.now(), index=True
-    )
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=func.now(), onupdate=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
 
-    downloads: Mapped[list[Download]] = relationship(
-        "Download", back_populates="user", cascade="all, delete-orphan"
-    )
+    downloads: Mapped[list[Download]] = relationship("Download", back_populates="user", cascade="all, delete-orphan")

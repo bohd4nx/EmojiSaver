@@ -1,6 +1,6 @@
-from collections.abc import Awaitable, Callable
 import math
 import time
+from collections.abc import Awaitable, Callable
 from typing import TYPE_CHECKING, Any
 
 from aiogram import BaseMiddleware
@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 class RateLimitMiddleware(BaseMiddleware):
     def __init__(self) -> None:
         super().__init__()
+        # maps user_id -> monotonic timestamp of their last allowed request
         self._users: dict[int, float] = {}
 
     async def __call__(
@@ -28,6 +29,7 @@ class RateLimitMiddleware(BaseMiddleware):
             return await handler(event, data)
 
         now = time.monotonic()
+        # time elapsed since the user's last request (0.0 default means first-time users always pass)
         elapsed = now - self._users.get(user.id, 0.0)
 
         if elapsed < config.RATE_LIMIT_COOLDOWN:
@@ -38,7 +40,7 @@ class RateLimitMiddleware(BaseMiddleware):
 
             text = i18n.get("rate-limit-alert", seconds=wait)
 
-            # Extract actual message/callback from Update object
+            # extract actual message/callback from Update object
             if isinstance(event, Update):
                 if event.callback_query:
                     await event.callback_query.answer(text, show_alert=True)
@@ -56,6 +58,8 @@ class RateLimitMiddleware(BaseMiddleware):
         return await handler(event, data)
 
     def _cleanup(self, now: float) -> None:
+        # evict stale entries once the map grows large enough to be worth cleaning.
+        # only users whose last request is older than 2× cooldown are removed.
         if len(self._users) > 100:
             cutoff = now - config.RATE_LIMIT_COOLDOWN * 2
             self._users = {uid: t for uid, t in self._users.items() if t > cutoff}

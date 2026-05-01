@@ -1,0 +1,10 @@
+services:
+  bot:
+    build: .
+    container_name: emojisaverbot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      # Persist the SQLite database outside the container
+      - ./EmojiSaverBot.db:/app/EmojiSaverBot.db

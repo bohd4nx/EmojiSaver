@@ -36,7 +36,7 @@
 ```bash
 git clone https://github.com/bohd4nx/EmojiSaver.git
 cd EmojiSaver
-pip install -r requirements.txt
+pip install -e .
 cp .env.example .env
 ```
 
@@ -81,23 +81,16 @@ Non-TGS formats (WebM, WebP, MP4, GIF, etc.) are saved as-is without conversion.
 ## Docker
 
 ```bash
-docker build -t emojisaverbot .
+# create the database file on first run
+touch EmojiSaverBot.db
 
-# First time — create the database file
-touch /path/on/server/EmojiSaverBot.db
-
-docker run -d --name emojisaverbot \
-  --env-file .env \
-  --restart unless-stopped \
-  -v /path/on/server/EmojiSaverBot.db:/app/EmojiSaverBot.db \
-  emojisaverbot
+docker compose up -d
 ```
 
 ```bash
-docker logs -f emojisaverbot       # live logs
-docker restart emojisaverbot       # restart
-docker stop emojisaverbot          # stop
-docker rm emojisaverbot            # remove container
+docker compose logs -f    # live logs
+docker compose restart    # restart
+docker compose down       # stop and remove container
 ```
 
 ---
