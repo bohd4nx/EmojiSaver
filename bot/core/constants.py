@@ -12,9 +12,6 @@ SUPPORTED_LOCALES = frozenset({"en", "ru"})
 # log file name to centralize logging configuration.
 LOG_FILE_NAME = BASE_DIR / "Bot.log"
 
-# database file path to keep storage configuration consistent.
-DATABASE_FILE = BASE_DIR / "EmojiSaverBot.db"
-
 # maximum allowed archive size to prevent oversized uploads.
 MAX_ARCHIVE_SIZE = 45 * 1024 * 1024  # 45 MB
 

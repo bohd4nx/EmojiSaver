@@ -80,17 +80,19 @@ Non-TGS formats (WebM, WebP, MP4, GIF, etc.) are saved as-is without conversion.
 
 ## Docker
 
-```bash
-# create the database file on first run
-touch EmojiSaverBot.db
+Copy `.env.example` to `.env` and fill in your credentials, then:
 
+```bash
 docker compose up -d
 ```
+
+This starts a PostgreSQL container alongside the bot. The database is persisted in a named Docker volume.
 
 ```bash
 docker compose logs -f    # live logs
 docker compose restart    # restart
-docker compose down       # stop and remove container
+docker compose down       # stop and remove containers
+docker compose down -v    # stop and remove containers + database volume
 ```
 
 ---

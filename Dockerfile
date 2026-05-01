@@ -1,12 +1,13 @@
 FROM python:3.12-slim
 
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
 WORKDIR /app
 
-COPY pyproject.toml .
-RUN pip install --no-cache-dir .[dev]
+COPY pyproject.toml ./
+RUN pip install --no-cache-dir .
 
 COPY . .
-
-VOLUME ["/app/EmojiSaverBot.db"]
 
 CMD ["python", "main.py"]

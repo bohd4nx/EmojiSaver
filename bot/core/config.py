@@ -20,5 +20,11 @@ class Config:
         self.BOT_TOKEN: str = os.getenv("BOT_TOKEN")  # type: ignore[assignment]
         self.RATE_LIMIT_COOLDOWN = int(os.getenv("RATE_LIMIT_COOLDOWN", 5))
 
+        self.POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
+        self.POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "")
+        self.POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "db")
+        self.POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", "5432")
+        self.POSTGRES_DB: str = os.getenv("POSTGRES_DB", "emojisaver")
+
 
 config = Config()

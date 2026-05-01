@@ -1,5 +1,5 @@
 from sqlalchemy import func, select
-from sqlalchemy.dialects.sqlite import insert
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.models import User

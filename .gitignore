@@ -35,6 +35,9 @@ env/
 .env
 .env.local
 
+# Production compose
+docker-compose.prod.yml
+
 # IDE
 .vscode/
 .idea/
