@@ -48,6 +48,9 @@ docker-compose.prod.yml
 # Logs
 *.log
 
+# Admin panel (local only)
+admin-panel.patch
+
 # OS
 .DS_Store
 Thumbs.db
