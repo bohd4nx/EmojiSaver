@@ -9,9 +9,6 @@ DEFAULT_LOCALE = "en"
 # list of allowed locales to ensure only bundled translations are used.
 SUPPORTED_LOCALES = frozenset({"en", "ru"})
 
-# log file name to centralize logging configuration.
-LOG_FILE_NAME = BASE_DIR / "Bot.log"
-
 # maximum allowed archive size to prevent oversized uploads.
 MAX_ARCHIVE_SIZE = 45 * 1024 * 1024  # 45 MB
 
