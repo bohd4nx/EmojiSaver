@@ -1,5 +1,4 @@
 import io
-import random
 import zipfile
 
 from aiogram.enums import ChatAction
@@ -21,8 +20,7 @@ async def pack_zip(files: dict[str, bytes]) -> list[bytes]:
         current_zip.writestr(zip_path, data)
 
         # check current archive size after each write and start a new part if needed.
-        current_buffer.seek(0)
-        if len(current_buffer.getvalue()) > MAX_ARCHIVE_SIZE:
+        if current_buffer.tell() > MAX_ARCHIVE_SIZE:
             current_zip.close()
             archives.append(current_buffer.getvalue())
 
@@ -31,7 +29,6 @@ async def pack_zip(files: dict[str, bytes]) -> list[bytes]:
             current_zip = zipfile.ZipFile(current_buffer, "w", zipfile.ZIP_DEFLATED)
 
     current_zip.close()
-    current_buffer.seek(0)
     archives.append(current_buffer.getvalue())
 
     return archives
@@ -57,7 +54,3 @@ async def send_result(
             document=BufferedInputFile(data, filename=zip_name),
             caption=caption,
         )
-
-    # show donate message with ~25% probability (approximately every 4 downloads)
-    if random.random() < 0.25:
-        await message.answer(i18n.get("donate-message"))

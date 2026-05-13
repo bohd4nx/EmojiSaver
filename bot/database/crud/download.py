@@ -9,12 +9,9 @@ async def add_download(
     user_id: int,
     content_type: str,
     content_id: str | None = None,
-) -> Download:
-    download = Download(user_id=user_id, content_type=content_type, content_id=content_id)
-    session.add(download)
+) -> None:
+    session.add(Download(user_id=user_id, content_type=content_type, content_id=content_id))
     await session.commit()
-    await session.refresh(download)
-    return download
 
 
 async def get_download_by_id(session: AsyncSession, download_id: int) -> Download | None:
@@ -31,5 +28,5 @@ async def get_user_downloads(session: AsyncSession, user_id: int, limit: int | N
 
 
 async def get_total_downloads(session: AsyncSession) -> int:
-    result = await session.execute(select(func.count(Download.id)))
+    result = await session.execute(select(func.count()).select_from(Download))
     return result.scalar() or 0

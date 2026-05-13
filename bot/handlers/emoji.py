@@ -48,24 +48,18 @@ async def process_all_emojis(emoji_ids: set[str], bot: Bot) -> tuple[dict[str, b
     files: dict[str, bytes] = {}
     has_unsupported = False
 
-    for emoji_id in emoji_ids:
+    try:
+        stickers = await bot.get_custom_emoji_stickers(list(emoji_ids))
+    except Exception as exc:
+        logger.error("Failed to fetch custom emoji stickers: %s", exc)
+        return {}, False
+
+    for sticker in stickers:
         try:
-            emoji_files, is_unsupported = await process_emoji(emoji_id, bot)
+            emoji_files, is_unsupported = await download_and_convert(sticker.file_id, bot)
             files |= emoji_files
             has_unsupported = has_unsupported or is_unsupported
         except Exception as exc:
-            logger.error("Failed to process emoji %s: %s", emoji_id, exc)
+            logger.error("Failed to process emoji %s: %s", sticker.file_id, exc)
 
     return files, has_unsupported
-
-
-async def process_emoji(emoji_id: str, bot: Bot) -> tuple[dict[str, bytes], bool]:
-    try:
-        stickers = await bot.get_custom_emoji_stickers([emoji_id])
-        if not stickers:
-            logger.warning("No stickers found for emoji: %s", emoji_id)
-            return {}, False
-        return await download_and_convert(stickers[0].file_id, bot)
-    except Exception:
-        logger.exception("Failed to process emoji %s", emoji_id)
-        return {}, False

@@ -6,8 +6,7 @@ from bot.database.models import User
 
 
 async def get_user(session: AsyncSession, user_id: int) -> User | None:
-    result = await session.execute(select(User).where(User.user_id == user_id))
-    return result.scalar_one_or_none()
+    return await session.get(User, user_id)
 
 
 async def get_or_create_user(
@@ -28,7 +27,6 @@ async def get_or_create_user(
     ).returning(User)
     user = (await session.scalars(stmt)).one()
     await session.commit()
-    await session.refresh(user)
     return user
 
 

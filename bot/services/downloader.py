@@ -10,9 +10,9 @@ from bot.services import tgs_to_json, tgs_to_lottie, tgs_to_png
 
 
 def detect_format(data: bytes, fallback_path: str = "") -> str:
-    # tgs files are gzip-compressed; detect them by the gzip magic bytes (0x1f 0x8b)
+    # tgs files are gzip-compressed (0x1f 0x8b) or zlib-compressed (0x78 + 0x01/0x5e/0x9c/0xda)
     # before passing to the generic filetype library which doesn't know TGS.
-    if len(data) >= 2 and data[:2] == b"\x1f\x8b":
+    if len(data) >= 2 and (data[:2] == b"\x1f\x8b" or (data[0] == 0x78 and data[1] in (0x01, 0x5E, 0x9C, 0xDA))):
         return "tgs"
 
     # try to identify by magic bytes (e.g. WebM, WebP, MP4 …)
