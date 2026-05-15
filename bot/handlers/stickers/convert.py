@@ -6,8 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot.core import logger
 from bot.database.crud import add_download, get_or_create_user
 from bot.database.schemas import DownloadCreateSchema, UserCreateSchema
-from bot.handlers.status import status_message
-from bot.services import download_and_convert, pack_zip, send_result
+from bot.services import download_and_convert, pack_zip, send_result, status_message
 
 router = Router(name=__name__)
 
@@ -26,7 +25,7 @@ async def handle_sticker(message: Message, i18n: I18nContext, session: AsyncSess
             await status_msg.edit_text(i18n.get("processing-failed"))
             return
 
-        await send_result(message, await pack_zip(files), i18n, is_unsupported)
+        await send_result(message, pack_zip(files), i18n, is_unsupported)
 
     user = message.from_user
     if user:

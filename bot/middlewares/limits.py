@@ -2,7 +2,7 @@ from collections.abc import Awaitable, Callable
 from typing import TYPE_CHECKING, Any
 
 from aiogram import BaseMiddleware
-from aiogram.types import CallbackQuery, Message, TelegramObject, Update
+from aiogram.types import TelegramObject, Update
 from cachetools import TTLCache
 
 from bot.core import config
@@ -31,15 +31,8 @@ class RateLimitMiddleware(BaseMiddleware):
             if not i18n:
                 return None
             text = i18n.get("rate-limit-alert", seconds=config.RATE_LIMIT_COOLDOWN)
-            if isinstance(event, Update):
-                if event.callback_query:
-                    await event.callback_query.answer(text, show_alert=True)
-                elif event.message:
-                    await event.message.reply(text)
-            elif isinstance(event, CallbackQuery):
-                await event.answer(text, show_alert=True)
-            elif isinstance(event, Message):
-                await event.reply(text)
+            if isinstance(event, Update) and event.message:
+                await event.message.reply(text)
             return None
 
         self._users[user.id] = True

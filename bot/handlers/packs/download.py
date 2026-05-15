@@ -6,8 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot.core import logger
 from bot.database.crud import add_download, get_or_create_user
 from bot.database.schemas import DownloadCreateSchema, UserCreateSchema
-from bot.handlers.status import status_message
-from bot.services import pack_zip, send_result
+from bot.services import pack_zip, send_result, status_message
 
 from .processor import get_pack_items, process_items
 
@@ -39,7 +38,7 @@ async def handle_pack(message: Message, i18n: I18nContext, session: AsyncSession
             await status_msg.edit_text(i18n.get("processing-failed"))
             return
 
-        await send_result(message, await pack_zip(files), i18n, has_unsupported, pack_title)
+        await send_result(message, pack_zip(files), i18n, has_unsupported, pack_title)
 
     user = message.from_user
     if user:
