@@ -39,7 +39,7 @@ async def main(setup: bool = False) -> None:
         await bot.session.close()
         return
 
-    i18n_core = FluentCompileCore(path="locales/{locale}")
+    i18n_core = FluentCompileCore(path="locales/{locale}/LC_MESSAGES")
     await i18n_core.startup()
 
     dp = Dispatcher()
