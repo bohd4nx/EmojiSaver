@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.core import logger
 from bot.database.crud import add_download, get_or_create_user
+from bot.database.schemas import DownloadCreateSchema, UserCreateSchema
 from bot.handlers.status import status_message
 from bot.services import download_and_convert, pack_zip, send_result
 
@@ -40,8 +41,8 @@ async def handle_emoji(message: Message, i18n: I18nContext, session: AsyncSessio
 
     user = message.from_user
     if user:
-        await get_or_create_user(session, user.id, user.username)
-        await add_download(session, user.id, "emoji", json.dumps(list(emoji_ids)))
+        await get_or_create_user(session, UserCreateSchema(user_id=user.id, username=user.username))
+        await add_download(session, DownloadCreateSchema(user_id=user.id, content_type="emoji", content_id=json.dumps(list(emoji_ids))))
 
 
 async def process_all_emojis(emoji_ids: set[str], bot: Bot) -> tuple[dict[str, bytes], bool]:

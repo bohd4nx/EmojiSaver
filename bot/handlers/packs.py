@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.core import logger
 from bot.database.crud import add_download, get_or_create_user
+from bot.database.schemas import DownloadCreateSchema, UserCreateSchema
 from bot.handlers.status import status_message
 from bot.services import download_and_convert, pack_zip, send_result
 
@@ -43,8 +44,8 @@ async def handle_pack(message: Message, i18n: I18nContext, session: AsyncSession
 
     user = message.from_user
     if user:
-        await get_or_create_user(session, user.id, user.username)
-        await add_download(session, user.id, "pack", pack_name)
+        await get_or_create_user(session, UserCreateSchema(user_id=user.id, username=user.username))
+        await add_download(session, DownloadCreateSchema(user_id=user.id, content_type="pack", content_id=pack_name))
 
 
 async def get_pack_items(message: Message, pack_name: str) -> tuple[list[Sticker], str] | None:

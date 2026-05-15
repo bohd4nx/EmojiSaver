@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.core import logger
 from bot.database.crud import add_download, get_or_create_user
+from bot.database.schemas import DownloadCreateSchema, UserCreateSchema
 from bot.handlers.status import status_message
 from bot.services import download_and_convert, pack_zip, send_result
 
@@ -29,5 +30,5 @@ async def handle_sticker(message: Message, i18n: I18nContext, session: AsyncSess
 
     user = message.from_user
     if user:
-        await get_or_create_user(session, user.id, user.username)
-        await add_download(session, user.id, "sticker", message.sticker.file_id)
+        await get_or_create_user(session, UserCreateSchema(user_id=user.id, username=user.username))
+        await add_download(session, DownloadCreateSchema(user_id=user.id, content_type="sticker", content_id=message.sticker.file_id))
