@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram_i18n import I18nMiddleware
-from aiogram_i18n.cores.fluent_compile_core import FluentCompileCore
+from aiogram_i18n.cores import FluentCompileCore
 
 from bot.core import config, logger, setup_bot_profile, setup_logging
 from bot.core.constants import DEFAULT_LOCALE
