@@ -7,12 +7,11 @@ from aiogram.enums import ParseMode
 from aiogram_i18n import I18nMiddleware
 from aiogram_i18n.cores.fluent_compile_core import FluentCompileCore
 
-from bot.commands import help_router, start_router
 from bot.core import config, logger, setup_bot_profile, setup_logging
 from bot.core.constants import DEFAULT_LOCALE
 from bot.database import close_db, init_db
-from bot.handlers import emoji, errors, packs, stickers
-from bot.handlers.errors import setup_error_handlers
+from bot.handlers import router as handlers_router
+from bot.handlers import setup_error_handlers
 from bot.middlewares import (
     DatabaseMiddleware,
     LocaleMiddleware,
@@ -43,14 +42,7 @@ async def main(setup: bool = False) -> None:
     await i18n_core.startup()
 
     dp = Dispatcher()
-    dp.include_routers(
-        start_router,
-        help_router,
-        packs.router,
-        emoji.router,
-        stickers.router,
-        errors.router,
-    )
+    dp.include_router(handlers_router)
 
     i18n = I18nMiddleware(core=i18n_core, default_locale=DEFAULT_LOCALE)
     i18n.setup(dispatcher=dp)

@@ -31,4 +31,6 @@ async def handle_sticker(message: Message, i18n: I18nContext, session: AsyncSess
     user = message.from_user
     if user:
         await get_or_create_user(session, UserCreateSchema(user_id=user.id, username=user.username))
-        await add_download(session, DownloadCreateSchema(user_id=user.id, content_type="sticker", content_id=message.sticker.file_id))
+        await add_download(
+            session, DownloadCreateSchema(user_id=user.id, content_type="sticker", content_id=message.sticker.file_id)
+        )
