@@ -2,8 +2,8 @@
   <tr>
     <td><img src="https://www.bohd4n.dev/assets/projects/StickersDownloader.svg" alt="EmojiSaver" width="120" height="120"></td>
     <td>
-      <h1>Telegram Emoji Saver Bot</h1>
-      <p><b>Telegram bot that downloads and converts custom emoji and stickers to TGS, JSON, Lottie, and PNG formats.</b></p>
+      <h1>Sticker & Emoji Downloader</h1>
+      <p><b>Telegram bot that downloads and converts custom emoji, stickers, and full packs to TGS, JSON, Lottie, and PNG formats.</b></p>
       <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white" alt="Python"></a>
       <a href="https://t.me/EmojiSaverBot"><img src="https://img.shields.io/badge/Demo-@EmojiSaverBot-2CA5E0?style=flat&logo=telegram&logoColor=white" alt="Demo Bot"></a>
       <a href="https://app.tonkeeper.com/transfer/UQCppfw5DxWgdVHf3zkmZS8k1mt9oAUYxQLwq2fz3nhO8No5"><img src="https://img.shields.io/badge/Donate-TON-0098EA?style=flat&logo=ton&logoColor=white" alt="Donate TON"></a>
