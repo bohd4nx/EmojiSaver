@@ -2,31 +2,25 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.models import Download
+from bot.database.schemas import DownloadCreateSchema
 
 
-async def add_download(
-    session: AsyncSession,
-    user_id: int,
-    content_type: str,
-    content_id: str | None = None,
-) -> None:
-    session.add(Download(user_id=user_id, content_type=content_type, content_id=content_id))
+async def add_download(session: AsyncSession, dto: DownloadCreateSchema) -> None:
+    session.add(Download(user_id=dto.user_id, content_type=dto.content_type, content_id=dto.content_id))
     await session.commit()
 
 
 async def get_download_by_id(session: AsyncSession, download_id: int) -> Download | None:
-    result = await session.execute(select(Download).where(Download.id == download_id))
-    return result.scalar_one_or_none()
+    return await session.get(Download, download_id)
 
 
 async def get_user_downloads(session: AsyncSession, user_id: int, limit: int | None = None) -> list[Download]:
     query = select(Download).where(Download.user_id == user_id).order_by(Download.created_at.desc())
-    if limit:
+    if limit is not None:
         query = query.limit(limit)
-    result = await session.execute(query)
-    return list(result.scalars())
+    return list(await session.scalars(query))
 
 
 async def get_total_downloads(session: AsyncSession) -> int:
     result = await session.execute(select(func.count()).select_from(Download))
-    return result.scalar() or 0
+    return result.scalar_one()

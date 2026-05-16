@@ -21,7 +21,7 @@ class Base(DeclarativeBase):
     pass
 
 
-async def init_db() -> None:
+async def init_db() -> None:  # used in main.py on startup; in prod prefer alembic migrations
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 

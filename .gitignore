@@ -1,28 +1,23 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
 *.so
-.Python
+
+# Build & Distribution
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
 *.egg
+.eggs/
+wheels/
+
+# Cache
+.mypy_cache/
+.ruff_cache/
 
 # Virtual Environment
-venv/
 .venv/
+venv/
 env/
 
 # Database
@@ -31,25 +26,24 @@ env/
 *.sqlite
 *.sqlite3
 
-# Environment variables
+# Environment & Secrets
 .env
 .env.local
+*.prod.yml
+*prod
 
-# Production compose
-docker-compose.prod.yml
+# Logs
+logs/
+*.log
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
-# Logs
-*.log
-
-# Admin panel (local only)
-admin-panel.patch
+# Local patches
+*.patch
 
 # OS
 .DS_Store

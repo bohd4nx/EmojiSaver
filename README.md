@@ -2,10 +2,10 @@
 
   <img src="https://www.bohd4n.dev/assets/projects/StickersDownloader.svg" alt="EmojiSaver" width="120" height="120">
 
-  <h1>Telegram Emoji Saver Bot</h1>
+  <h1>Sticker & Emoji Downloader</h1>
 
   <p>
-    <b>Telegram bot that downloads and converts custom emoji and stickers to TGS, JSON, Lottie, and PNG formats.</b>
+    <b>Telegram bot that downloads and converts custom emoji, stickers, and full packs to TGS, JSON, Lottie, and PNG formats.</b>
   </p>
 
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
@@ -40,20 +40,11 @@ pip install -e .
 cp .env.example .env
 ```
 
-Edit `.env` with your credentials (see [Configuration](#configuration) below), then run:
+Edit `.env` with your credentials, then run:
 
 ```bash
 python main.py
 ```
-
----
-
-## Configuration
-
-| Variable              | Description                                         |
-| --------------------- | --------------------------------------------------- |
-| `BOT_TOKEN`           | Bot token from [@BotFather](https://t.me/BotFather) |
-| `RATE_LIMIT_COOLDOWN` | Cooldown between requests in seconds (default: `5`) |
 
 ---
 

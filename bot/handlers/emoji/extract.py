@@ -1,19 +1,20 @@
 import json
 
-from aiogram import Bot, F, Router
+from aiogram import F, Router
 from aiogram.types import Message
 from aiogram_i18n import I18nContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.core import logger
 from bot.database.crud import add_download, get_or_create_user
-from bot.handlers.status import status_message
-from bot.services import download_and_convert, pack_zip, send_result
+from bot.database.schemas import DownloadCreateSchema, UserCreateSchema
+from bot.services import pack_zip, send_result, status_message
+
+from .processor import process_all_emojis
 
 router = Router(name=__name__)
 
 
-# match any message that contains at least one custom emoji entity
 @router.message(F.entities.func(lambda entities: any(e.type == "custom_emoji" for e in entities)))
 async def handle_emoji(message: Message, i18n: I18nContext, session: AsyncSession) -> None:
     entities = message.entities or []
@@ -36,30 +37,11 @@ async def handle_emoji(message: Message, i18n: I18nContext, session: AsyncSessio
             await status_msg.edit_text(i18n.get("processing-failed"))
             return
 
-        await send_result(message, await pack_zip(files), i18n, has_unsupported)
+        await send_result(message, pack_zip(files), i18n, has_unsupported)
 
     user = message.from_user
     if user:
-        await get_or_create_user(session, user.id, user.username)
-        await add_download(session, user.id, "emoji", json.dumps(list(emoji_ids)))
-
-
-async def process_all_emojis(emoji_ids: set[str], bot: Bot) -> tuple[dict[str, bytes], bool]:
-    files: dict[str, bytes] = {}
-    has_unsupported = False
-
-    try:
-        stickers = await bot.get_custom_emoji_stickers(list(emoji_ids))
-    except Exception as exc:
-        logger.error("Failed to fetch custom emoji stickers: %s", exc)
-        return {}, False
-
-    for sticker in stickers:
-        try:
-            emoji_files, is_unsupported = await download_and_convert(sticker.file_id, bot)
-            files |= emoji_files
-            has_unsupported = has_unsupported or is_unsupported
-        except Exception as exc:
-            logger.error("Failed to process emoji %s: %s", sticker.file_id, exc)
-
-    return files, has_unsupported
+        await get_or_create_user(session, UserCreateSchema(user_id=user.id, username=user.username))
+        await add_download(
+            session, DownloadCreateSchema(user_id=user.id, content_type="emoji", content_id=json.dumps(list(emoji_ids)))
+        )

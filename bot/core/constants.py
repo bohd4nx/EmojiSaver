@@ -1,8 +1,3 @@
-from pathlib import Path
-
-# absolute path to the project root directory.
-BASE_DIR = Path(__file__).resolve().parents[2]
-
 # fallback language when the user has no locale or it is not supported.
 DEFAULT_LOCALE = "en"
 
@@ -17,7 +12,7 @@ NON_CONVERTIBLE_FORMATS = frozenset({"webm", "webp", "mp4", "gif", "png", "jpg",
 
 # metadata for exported Lottie animations to keep generation details consistent.
 LOTTIE_MANIFEST = {
-    "version": "2026.2.0",
+    "version": "2026.2.1",
     "generator": "EmojiSaverBot",
     "author": "https://github.com/bohd4nx",
     "description": ("Telegram bot for extracting and converting animated emoji and stickers into Lottie/JSON/TGS formats"),

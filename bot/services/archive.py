@@ -8,7 +8,7 @@ from aiogram_i18n import I18nContext
 from bot.core.constants import MAX_ARCHIVE_SIZE
 
 
-async def pack_zip(files: dict[str, bytes]) -> list[bytes]:
+def pack_zip(files: dict[str, bytes]) -> list[bytes]:
     archives = []
     current_buffer = io.BytesIO()
     current_zip = zipfile.ZipFile(current_buffer, "w", zipfile.ZIP_DEFLATED)

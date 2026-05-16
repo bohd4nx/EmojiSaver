@@ -1,6 +1,6 @@
 [project]
 name = "emojisaver-bot"
-version = "2026.1.0"
+version = "2026.2.1"
 description = "Telegram bot for downloading and converting emoji and stickers"
 requires-python = ">=3.12"
 authors = [{ name = "bohd4nx" }]
